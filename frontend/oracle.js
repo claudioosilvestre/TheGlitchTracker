@@ -441,8 +441,8 @@ function initMatrixRain() {
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
-  const CHAR_SIZE = 20;
-  const FPS       = 20; // Firefox handles lower frame rates better
+  const CHAR_SIZE = 22;
+  const FPS       = 24;
   const INTERVAL  = 1000 / FPS;
 
   function resize() {
@@ -466,11 +466,15 @@ function initMatrixRain() {
 
     lastTime = timestamp;
 
-    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    // Lower opacity = longer trail / more visible rain
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#00cc33';
-    ctx.font = `${CHAR_SIZE - 2}px monospace`;
+    // Brighter green + glow effect
+    ctx.fillStyle = '#00ff41';
+    ctx.shadowColor = '#00ff41';
+    ctx.shadowBlur = 8;
+    ctx.font = `${CHAR_SIZE}px Share Tech Mono, monospace`;
 
     for (let i = 0; i < drops.length; i++) {
       const char = chars[Math.floor(Math.random() * chars.length)];
@@ -511,6 +515,7 @@ function initMatrixRain() {
     }, 200);
   });
 }
+
 
 // CLOCK
 // Initializes and updates the live clock in the header.
