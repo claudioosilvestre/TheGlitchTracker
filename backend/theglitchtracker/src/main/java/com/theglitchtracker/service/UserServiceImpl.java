@@ -66,8 +66,6 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Id must be positive");
         }
 
-
-
         return null;
     }
 
