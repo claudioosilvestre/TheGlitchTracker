@@ -40,7 +40,7 @@ const routes = {
   '/operatives': renderOperatives,
 };
 
-// Navigates to a new "page" without reloading the browser - SPA CONCEPT 
+// Navigates to a new "page" without reloading the browser.
 // Updates the URL using the History API and renders the correct view.
 function navigate(path) {
   window.history.pushState({}, '', path);
@@ -82,12 +82,12 @@ document.addEventListener('click', e => {
 });
 
 // API FUNCTIONS
-// -- Functions ready to connect to backend - while not ready we're using mock data. ---//
+// Functions ready to connect to backend - while not ready we're using mock data.
 
-const USE_MOCK = true; // --- to be changed to false when backend is ready ---//
+const USE_MOCK = true; // to be changed to false when backend is ready
 
 // Fetches all glitches from backend (now it's from mock data).
-// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
+// REMOVE THE MOCK COMMENT when backend connection is done.
 // Returns a list of glitch objects.
 async function fetchGlitches() {
   if (USE_MOCK) return MOCK_GLITCHES;
@@ -97,7 +97,7 @@ async function fetchGlitches() {
 }
 
 // Fetches all users from backend (now it's from mock data).
-// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
+// REMOVE THE MOCK COMMENT when backend connection is done.
 // Returns a list of user objects.
 async function fetchUsers() {
   if (USE_MOCK) return MOCK_USERS;
@@ -107,7 +107,7 @@ async function fetchUsers() {
 }
 
 // Sends a new glitch to the backend (now it adds to mock).
-// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
+// REMOVE THE MOCK COMMENT when backend connection is done.
 // Automatically assigns a unique ID and default status.
 async function postGlitch(glitchData) {
   if (USE_MOCK) {
@@ -223,13 +223,38 @@ function renderCard(g) {
 
 // NEW GLITCH FORM
 // Renders the form to create a new glitch.
+// Uses custom dropdowns instead of native <select> to fix Firefox color bug.
 // Loads users and allows assigning a glitch to an operative.
 async function renderNewGlitch() {
   const app = document.getElementById('app');
   let users = [];
   try { users = await fetchUsers(); } catch {}
 
-  const userOptions = users.map(u => `<option value="${u.name}">${u.name}</option>`).join('');
+  const priorityOptions = [
+    { value: 'Agent Smith', label: 'Agent Smith — Critical' },
+    { value: 'High Alert',  label: 'High Alert' },
+    { value: 'Glitch',      label: 'Glitch — Medium' },
+    { value: 'Deja Vu',     label: 'Déjà Vu — Low' },
+  ];
+
+  const assignOptions = [
+    { value: '', label: '-- Unassigned --' },
+    ...users.map(u => ({ value: u.name, label: u.name })),
+  ];
+
+  // Builds a fully custom dropdown (replaces native <select> for Firefox fix)
+  function buildDropdown(id, options) {
+    const items = options.map(o =>
+      `<div class="dd-option" data-value="${o.value}">${o.label}</div>`
+    ).join('');
+    return `
+      <div class="dd-wrapper" id="${id}-wrapper">
+        <div class="dd-selected" id="${id}-selected">${options[0].label}</div>
+        <div class="dd-list" id="${id}-list">${items}</div>
+        <input type="hidden" id="${id}" value="${options[0].value}" />
+      </div>
+    `;
+  }
 
   app.innerHTML = `
     <div class="page-title">&gt; REPORT_NEW_GLITCH // <span>OPERATIVE INPUT</span></div>
@@ -244,25 +269,54 @@ async function renderNewGlitch() {
       </div>
       <div class="form-group">
         <label class="form-label">Threat Level (Priority) *</label>
-        <select class="form-select" id="f-priority">
-          <option value="Agent Smith">Agent Smith — Critical</option>
-          <option value="High Alert">High Alert</option>
-          <option value="Glitch">Glitch — Medium</option>
-          <option value="Deja Vu">Déjà Vu — Low</option>
-        </select>
+        ${buildDropdown('f-priority', priorityOptions)}
       </div>
       <div class="form-group">
         <label class="form-label">Assign to Operative</label>
-        <select class="form-select" id="f-assign">
-          <option value="">-- Unassigned --</option>
-          ${userOptions}
-        </select>
+        ${buildDropdown('f-assign', assignOptions)}
       </div>
       <button class="btn-submit" id="btn-submit">&gt; INJECT INTO SYSTEM</button>
       <div class="msg success" id="msg-ok">&gt; GLITCH LOGGED. THE ORACLE HAS BEEN NOTIFIED.</div>
       <div class="msg error" id="msg-err">&gt; TRANSMISSION FAILED. TRY AGAIN.</div>
     </div>
   `;
+
+  // Initializes each custom dropdown: toggle open/close and select an option.
+  // Closes all other dropdowns when one opens (only one open at a time).
+  function initDropdown(id) {
+    const wrapper  = document.getElementById(`${id}-wrapper`);
+    const selected = document.getElementById(`${id}-selected`);
+    const list     = document.getElementById(`${id}-list`);
+    const hidden   = document.getElementById(id);
+
+    selected.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Close all other open dropdowns first
+      document.querySelectorAll('.dd-list.open').forEach(l => {
+        if (l !== list) l.classList.remove('open');
+      });
+      list.classList.toggle('open');
+    });
+
+    list.querySelectorAll('.dd-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        selected.textContent = opt.textContent;
+        hidden.value = opt.dataset.value;
+        list.classList.remove('open');
+        // Mark the selected option visually
+        list.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+      });
+    });
+  }
+
+  initDropdown('f-priority');
+  initDropdown('f-assign');
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dd-list.open').forEach(l => l.classList.remove('open'));
+  });
 
   document.getElementById('btn-submit').addEventListener('click', async () => {
     const title      = document.getElementById('f-title').value.trim();
@@ -280,6 +334,11 @@ async function renderNewGlitch() {
       showMsg('msg-ok');
       document.getElementById('f-title').value = '';
       document.getElementById('f-desc').value  = '';
+      // Reset dropdowns to first option after successful submit
+      document.getElementById('f-priority-selected').textContent = 'Agent Smith — Critical';
+      document.getElementById('f-priority').value = 'Agent Smith';
+      document.getElementById('f-assign-selected').textContent = '-- Unassigned --';
+      document.getElementById('f-assign').value = '';
     } catch (err) {
       showMsg('msg-err', `ERROR: ${err.message}`);
     }
@@ -331,7 +390,7 @@ async function renderOperatives() {
 // MATRIX RAIN (Canvas)
 // Creates the Matrix "rain" animation using a canvas element.
 // Continuously draws falling characters on the screen.
-// Uses requestAnimationFrame (not setInterval) to avoid browser crashes -- it was happening in Firefox so had to adjust hole code.
+// Uses requestAnimationFrame (not setInterval) to avoid browser crashes.
 function initMatrixRain() {
   const container = document.getElementById('matrixRain');
   const canvas = document.createElement('canvas');
@@ -339,7 +398,7 @@ function initMatrixRain() {
   const ctx = canvas.getContext('2d');
 
   const CHAR_SIZE = 20;
-  const FPS       = 20; // because Firefox handles lower frame rates better 
+  const FPS       = 20; // Firefox handles lower frame rates better
   const INTERVAL  = 1000 / FPS;
 
   function resize() {
