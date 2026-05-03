@@ -52,6 +52,11 @@ public class UserServiceImpl implements UserService {
         if(userRepository.findByName(user.getName()).isPresent()) {
             throw new UserAlreadyExistsException();
         }
+        if(!updatedUser.getName().equals(user.getName()) &&
+                userRepository.findByName(user.getName()).isPresent()) {
+            throw new UserAlreadyExistsException();
+        }
+
         updatedUser.setName(user.getName());
         updatedUser.setUserRole(user.getUserRole());
 
@@ -66,12 +71,24 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Id must be positive");
         }
 
-        return null;
+        if(!userRepository.findById(userId).isPresent()) {
+            throw new UserNotFoundException();
+        }
+
+        User user = userRepository.findById(userId).get();
+
+        return user;
     }
 
     @Override
     public void deleteUser(int userId) {
-
+        if(userId <= 0) {
+            throw new IllegalArgumentException("Id must be positive");
+        }
+        if(!userRepository.findById(userId).isPresent()) {
+            throw new UserNotFoundException();
+        }
+        userRepository.deleteById(userId);
     }
 
     @Autowired
