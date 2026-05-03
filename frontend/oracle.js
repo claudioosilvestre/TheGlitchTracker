@@ -1,8 +1,13 @@
+// ============================================
+//   THE GLITCH TRACKER — ORACLE SYSTEM
+//   oracle.js — SPA Logic + API Integration
+// ============================================
 
 // When the backend is ready we MUST change this line
 const API_BASE = 'http://localhost:8080/api';
 
-// ATTENTION: this is the MOCK DATA until the backend isn't ready! THEN the fetchGlitches/fetchUsers functions will to the job.
+// ATTENTION: this is the MOCK DATA until the backend isn't ready!
+// THEN the fetchGlitches/fetchUsers functions will do the job.
 
 let MOCK_GLITCHES = [
   { id: 1, title: "Agent detected near the Oracle's kitchen", description: "System anomaly in sector 7G. Possible Smith replication.", status: "Identified", priority: "Agent Smith", assignedTo: "Neo" },
@@ -14,10 +19,10 @@ let MOCK_GLITCHES = [
 ];
 
 const MOCK_USERS = [
-  { id: 1, name: "Neo",      role: "The One",        avatar: "🕶️" },
-  { id: 2, name: "Trinity",  role: "Operative",      avatar: "🔫" },
-  { id: 3, name: "Morpheus", role: "Captain",        avatar: "🚢" },
-  { id: 4, name: "Tank",     role: "Operator",       avatar: "💻" },
+  { id: 1, name: "Neo",      role: "The One",   avatar: "🕶️" },
+  { id: 2, name: "Trinity",  role: "Operative", avatar: "🔫" },
+  { id: 3, name: "Morpheus", role: "Captain",   avatar: "🚢" },
+  { id: 4, name: "Tank",     role: "Operator",  avatar: "💻" },
 ];
 
 // PRIORITY MAP
@@ -30,12 +35,12 @@ const priorityClass = {
 
 // ROUTER (History API)
 const routes = {
-  '/dashboard':   renderDashboard,
-  '/new-glitch':  renderNewGlitch,
-  '/operatives':  renderOperatives,
+  '/dashboard':  renderDashboard,
+  '/new-glitch': renderNewGlitch,
+  '/operatives': renderOperatives,
 };
 
-// Navigates to a new "page" without reloading the browser.
+// Navigates to a new "page" without reloading the browser - SPA CONCEPT 
 // Updates the URL using the History API and renders the correct view.
 function navigate(path) {
   window.history.pushState({}, '', path);
@@ -77,11 +82,12 @@ document.addEventListener('click', e => {
 });
 
 // API FUNCTIONS
-// fucntions ready to connect to backend - while not ready we're using mock data.
+// -- Functions ready to connect to backend - while not ready we're using mock data. ---//
 
-const USE_MOCK = true; // to be chandef to false when backedn os ready OR adjust we'll need to agree on approach
+const USE_MOCK = true; // --- to be changed to false when backend is ready ---//
 
-// Fetches all glitches from backend (now it's fromn mock data - REMOVE THIS COMMENT LATER when Backend connection is done)
+// Fetches all glitches from backend (now it's from mock data).
+// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
 // Returns a list of glitch objects.
 async function fetchGlitches() {
   if (USE_MOCK) return MOCK_GLITCHES;
@@ -90,7 +96,8 @@ async function fetchGlitches() {
   return res.json();
 }
 
-// Fetches all users from backend (now it's fromn mock data - REMOVE THIS COMMENT LATER when Backend connection is done)
+// Fetches all users from backend (now it's from mock data).
+// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
 // Returns a list of user objects.
 async function fetchUsers() {
   if (USE_MOCK) return MOCK_USERS;
@@ -99,7 +106,8 @@ async function fetchUsers() {
   return res.json();
 }
 
-// Sends a new glitch to the backend (now it adds to mock - REMOVE THIS COMMENT LATER when Backend connection is done)
+// Sends a new glitch to the backend (now it adds to mock).
+// ---REMOVE THE MOCK COMMENT when backend connection is done. --//
 // Automatically assigns a unique ID and default status.
 async function postGlitch(glitchData) {
   if (USE_MOCK) {
@@ -116,7 +124,7 @@ async function postGlitch(glitchData) {
   return res.json();
 }
 
-// Updates the status of a glitch (e.g., Identified → Fixed)
+// Updates the status of a glitch (e.g., Identified -> System Fixed).
 async function updateGlitchStatus(id, status) {
   if (USE_MOCK) {
     const g = MOCK_GLITCHES.find(g => g.id === id);
@@ -150,9 +158,9 @@ async function renderDashboard() {
   }
 
   const cols = {
-    'Identified':       glitches.filter(g => g.status === 'Identified'),
+    'Identified':        glitches.filter(g => g.status === 'Identified'),
     'Bending the Rules': glitches.filter(g => g.status === 'Bending the Rules'),
-    'System Fixed':     glitches.filter(g => g.status === 'System Fixed'),
+    'System Fixed':      glitches.filter(g => g.status === 'System Fixed'),
   };
 
   const total    = glitches.length;
@@ -197,8 +205,8 @@ function renderColumn(title, cssClass, glitches) {
   `;
 }
 
-// Renders an individual glitch card
-// Displays ID, title, priority and assigned user
+// Renders an individual glitch card.
+// Displays ID, title, priority and assigned user.
 function renderCard(g) {
   const pClass = priorityClass[g.priority] || 'priority-low';
   return `
@@ -257,9 +265,9 @@ async function renderNewGlitch() {
   `;
 
   document.getElementById('btn-submit').addEventListener('click', async () => {
-    const title    = document.getElementById('f-title').value.trim();
-    const desc     = document.getElementById('f-desc').value.trim();
-    const priority = document.getElementById('f-priority').value;
+    const title      = document.getElementById('f-title').value.trim();
+    const desc       = document.getElementById('f-desc').value.trim();
+    const priority   = document.getElementById('f-priority').value;
     const assignedTo = document.getElementById('f-assign').value || 'Unassigned';
 
     if (!title) {
@@ -279,7 +287,7 @@ async function renderNewGlitch() {
 }
 
 // Displays a temporary success or error message.
-// Automatically hides after a few seconds
+// Automatically hides after a few seconds.
 function showMsg(id, customText) {
   const el = document.getElementById(id);
   if (customText) el.textContent = `> ${customText}`;
@@ -318,40 +326,70 @@ async function renderOperatives() {
     <div class="page-title">&gt; NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span></div>
     <div class="operatives-grid">${cards}</div>
   `;
+}
 
-  // MATRIX RAIN (Canvas)
+// MATRIX RAIN (Canvas)
 // Creates the Matrix "rain" animation using a canvas element.
 // Continuously draws falling characters on the screen.
+// Uses requestAnimationFrame (not setInterval) to avoid browser crashes -- it was happening in Firefox so had to adjust hole code.
 function initMatrixRain() {
   const container = document.getElementById('matrixRain');
   const canvas = document.createElement('canvas');
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const CHAR_SIZE = 20;
+  const FPS       = 20; // because Firefox handles lower frame rates better 
+  const INTERVAL  = 1000 / FPS;
 
-  const cols   = Math.floor(canvas.width / 16);
-  const drops  = Array(cols).fill(1);
-  const chars  = '01アイウエオカキクケコサシスセソタチ'.split('');
+  function resize() {
+    canvas.width  = Math.floor(window.innerWidth  / CHAR_SIZE) * CHAR_SIZE;
+    canvas.height = Math.floor(window.innerHeight / CHAR_SIZE) * CHAR_SIZE;
+  }
+  resize();
 
-  function draw() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  const cols  = Math.floor(canvas.width / CHAR_SIZE);
+  const drops = Array(cols).fill(1);
+  const chars = '01アイウエカキクケサシスタチ'.split('');
+
+  let lastTime = 0;
+  let rafId;
+
+  function draw(timestamp) {
+    rafId = requestAnimationFrame(draw);
+    if (timestamp - lastTime < INTERVAL) return; // throttle to target FPS
+    lastTime = timestamp;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#00ff41';
-    ctx.font = '14px Share Tech Mono';
-    drops.forEach((y, i) => {
+    ctx.fillStyle = '#00cc33';
+    ctx.font = `${CHAR_SIZE - 2}px monospace`;
+
+    for (let i = 0; i < drops.length; i++) {
       const char = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(char, i * 16, y * 16);
-      if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      ctx.fillText(char, i * CHAR_SIZE, drops[i] * CHAR_SIZE);
+      if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
-    });
+    }
   }
 
-  setInterval(draw, 60);
+  rafId = requestAnimationFrame(draw);
+
+  // This stops the animation when the tab is not visible - avoids app crash
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(rafId);
+    } else {
+      lastTime = 0;
+      rafId = requestAnimationFrame(draw);
+    }
+  });
+
+  // Debounce resize - avoids recalculating on every pixel change
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 200);
   });
 }
 
@@ -376,6 +414,3 @@ initClock();
 const initialPath = window.location.pathname === '/' ? '/dashboard' : window.location.pathname;
 loadPage(initialPath);
 updateNav(initialPath);
-
-}
-
