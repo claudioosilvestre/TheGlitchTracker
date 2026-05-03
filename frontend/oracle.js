@@ -19,10 +19,10 @@ let MOCK_GLITCHES = [
 ];
 
 const MOCK_USERS = [
-  { id: 1, name: "Neo",      role: "The One",   avatar: "🕶️" },
-  { id: 2, name: "Trinity",  role: "Operative", avatar: "🔫" },
-  { id: 3, name: "Morpheus", role: "Captain",   avatar: "🚢" },
-  { id: 4, name: "Tank",     role: "Operator",  avatar: "💻" },
+  { id: 1, name: "Neo",      role: "The One",   avatar: "frontend/images/Neo.jpeg" },
+  { id: 2, name: "Trinity",  role: "Operative", avatar: "frontend/images/Trinity.png" },
+  { id: 3, name: "Morpheus", role: "Captain",   avatar: "frontend/images/Morpheus.jpg" },
+  { id: 4, name: "Tank",     role: "Operator",  avatar: "frontend/images/Tank.jpg" },
 ];
 
 // PRIORITY MAP
@@ -115,11 +115,13 @@ async function postGlitch(glitchData) {
     MOCK_GLITCHES.push(newGlitch);
     return newGlitch;
   }
+
   const res = await fetch(`${API_BASE}/glitches`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(glitchData),
   });
+
   if (!res.ok) throw new Error('Failed to create glitch');
   return res.json();
 }
@@ -131,11 +133,13 @@ async function updateGlitchStatus(id, status) {
     if (g) g.status = status;
     return g;
   }
+
   const res = await fetch(`${API_BASE}/glitches/${id}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status }),
   });
+
   if (!res.ok) throw new Error('Failed to update status');
   return res.json();
 }
@@ -150,6 +154,7 @@ async function renderDashboard() {
   app.innerHTML = `<div class="loading">&gt; SCANNING MATRIX FOR ANOMALIES...</div>`;
 
   let glitches;
+
   try {
     glitches = await fetchGlitches();
   } catch (err) {
@@ -163,9 +168,8 @@ async function renderDashboard() {
     'System Fixed':      glitches.filter(g => g.status === 'System Fixed'),
   };
 
-  const total    = glitches.length;
-  const critical = glitches.filter(g => g.priority === 'Agent Smith').length;
-  const fixed    = cols['System Fixed'].length;
+  const total = glitches.length;
+  const fixed = cols['System Fixed'].length;
 
   app.innerHTML = `
     <div class="page-title">&gt; MATRIX_ANOMALY_DASHBOARD // <span>LIVE FEED</span></div>
@@ -175,7 +179,6 @@ async function renderDashboard() {
       <div class="stat-chip"><strong>${cols['Identified'].length}</strong>Identified</div>
       <div class="stat-chip"><strong>${cols['Bending the Rules'].length}</strong>In Progress</div>
       <div class="stat-chip"><strong>${fixed}</strong>System Fixed</div>
-      <div class="stat-chip"><strong>${critical}</strong>⚠ Agent Smith Level</div>
     </div>
 
     <div class="kanban-board">
@@ -209,13 +212,14 @@ function renderColumn(title, cssClass, glitches) {
 // Displays ID, title, priority and assigned user.
 function renderCard(g) {
   const pClass = priorityClass[g.priority] || 'priority-low';
+
   return `
     <div class="glitch-card">
       <div class="card-id">#GLT-${String(g.id).padStart(4, '0')}</div>
       <div class="card-title">${g.title}</div>
       <div class="card-footer">
         <span class="priority-badge ${pClass}">${g.priority}</span>
-        <span class="card-assignee">@${g.assignedTo || 'Unassigned'}</span>
+        <span class="card-assignee">@${g.assignedTo}</span>
       </div>
     </div>
   `;
@@ -228,9 +232,13 @@ function renderCard(g) {
 async function renderNewGlitch() {
   const app = document.getElementById('app');
   let users = [];
-  try { users = await fetchUsers(); } catch {}
+
+  try {
+    users = await fetchUsers();
+  } catch {}
 
   const priorityOptions = [
+    { value: '', label: '-- Choose priority --' },
     { value: 'Agent Smith', label: 'Agent Smith — Critical' },
     { value: 'High Alert',  label: 'High Alert' },
     { value: 'Glitch',      label: 'Glitch — Medium' },
@@ -238,7 +246,7 @@ async function renderNewGlitch() {
   ];
 
   const assignOptions = [
-    { value: '', label: '-- Unassigned --' },
+    { value: '', label: '-- Choose operative --' },
     ...users.map(u => ({ value: u.name, label: u.name })),
   ];
 
@@ -247,6 +255,7 @@ async function renderNewGlitch() {
     const items = options.map(o =>
       `<div class="dd-option" data-value="${o.value}">${o.label}</div>`
     ).join('');
+
     return `
       <div class="dd-wrapper" id="${id}-wrapper">
         <div class="dd-selected" id="${id}-selected">${options[0].label}</div>
@@ -258,24 +267,30 @@ async function renderNewGlitch() {
 
   app.innerHTML = `
     <div class="page-title">&gt; REPORT_NEW_GLITCH // <span>OPERATIVE INPUT</span></div>
+
     <div class="form-container">
       <div class="form-group">
         <label class="form-label">Glitch Title *</label>
-        <input class="form-input" id="f-title" type="text" placeholder="Describe the anomaly..." />
+        <input class="form-input" id="f-title" type="text" placeholder="Give your Glitch a Title..." />
       </div>
+
       <div class="form-group">
         <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="f-desc" placeholder="Additional intel..."></textarea>
+        <textarea class="form-textarea" id="f-desc" placeholder="Describe the Anomaly..."></textarea>
       </div>
+
       <div class="form-group">
         <label class="form-label">Threat Level (Priority) *</label>
         ${buildDropdown('f-priority', priorityOptions)}
       </div>
+
       <div class="form-group">
-        <label class="form-label">Assign to Operative</label>
+        <label class="form-label">Assign to Operative *</label>
         ${buildDropdown('f-assign', assignOptions)}
       </div>
+
       <button class="btn-submit" id="btn-submit">&gt; INJECT INTO SYSTEM</button>
+
       <div class="msg success" id="msg-ok">&gt; GLITCH LOGGED. THE ORACLE HAS BEEN NOTIFIED.</div>
       <div class="msg error" id="msg-err">&gt; TRANSMISSION FAILED. TRY AGAIN.</div>
     </div>
@@ -284,25 +299,29 @@ async function renderNewGlitch() {
   // Initializes each custom dropdown: toggle open/close and select an option.
   // Closes all other dropdowns when one opens (only one open at a time).
   function initDropdown(id) {
-    const wrapper  = document.getElementById(`${id}-wrapper`);
     const selected = document.getElementById(`${id}-selected`);
     const list     = document.getElementById(`${id}-list`);
     const hidden   = document.getElementById(id);
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
+
       // Close all other open dropdowns first
       document.querySelectorAll('.dd-list.open').forEach(l => {
         if (l !== list) l.classList.remove('open');
       });
+
       list.classList.toggle('open');
     });
 
     list.querySelectorAll('.dd-option').forEach(opt => {
-      opt.addEventListener('click', () => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+
         selected.textContent = opt.textContent;
         hidden.value = opt.dataset.value;
         list.classList.remove('open');
+
         // Mark the selected option visually
         list.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
@@ -322,23 +341,39 @@ async function renderNewGlitch() {
     const title      = document.getElementById('f-title').value.trim();
     const desc       = document.getElementById('f-desc').value.trim();
     const priority   = document.getElementById('f-priority').value;
-    const assignedTo = document.getElementById('f-assign').value || 'Unassigned';
+    const assignedTo = document.getElementById('f-assign').value;
 
     if (!title) {
       showMsg('msg-err', 'ERROR: Glitch title is required.');
       return;
     }
 
+    if (!priority) {
+      showMsg('msg-err', 'ERROR: Threat level is required.');
+      return;
+    }
+
+    if (!assignedTo) {
+      showMsg('msg-err', 'ERROR: Assign an operative.');
+      return;
+    }
+
     try {
       await postGlitch({ title, description: desc, priority, assignedTo });
+
       showMsg('msg-ok');
+
       document.getElementById('f-title').value = '';
       document.getElementById('f-desc').value  = '';
-      // Reset dropdowns to first option after successful submit
-      document.getElementById('f-priority-selected').textContent = 'Agent Smith — Critical';
-      document.getElementById('f-priority').value = 'Agent Smith';
-      document.getElementById('f-assign-selected').textContent = '-- Unassigned --';
+
+      // Reset dropdowns to placeholder option after successful submit
+      document.getElementById('f-priority-selected').textContent = '-- Choose priority --';
+      document.getElementById('f-priority').value = '';
+
+      document.getElementById('f-assign-selected').textContent = '-- Choose operative --';
       document.getElementById('f-assign').value = '';
+
+      document.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
     } catch (err) {
       showMsg('msg-err', `ERROR: ${err.message}`);
     }
@@ -349,9 +384,14 @@ async function renderNewGlitch() {
 // Automatically hides after a few seconds.
 function showMsg(id, customText) {
   const el = document.getElementById(id);
+
   if (customText) el.textContent = `> ${customText}`;
+
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 4000);
+
+  setTimeout(() => {
+    el.classList.remove('show');
+  }, 4000);
 }
 
 // OPERATIVES
@@ -362,6 +402,7 @@ async function renderOperatives() {
   app.innerHTML = `<div class="loading">&gt; LOADING OPERATIVE ROSTER...</div>`;
 
   let users, glitches;
+
   try {
     [users, glitches] = await Promise.all([fetchUsers(), fetchGlitches()]);
   } catch (err) {
@@ -371,9 +412,12 @@ async function renderOperatives() {
 
   const cards = users.map(u => {
     const count = glitches.filter(g => g.assignedTo === u.name && g.status !== 'System Fixed').length;
+
     return `
       <div class="operative-card">
-        <div class="operative-avatar">${u.avatar || '👤'}</div>
+        <div class="operative-avatar">
+          <img src="${u.avatar}" alt="${u.name}" />
+        </div>
         <div class="operative-name">${u.name}</div>
         <div class="operative-role">${u.role}</div>
         <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
@@ -402,13 +446,14 @@ function initMatrixRain() {
   const INTERVAL  = 1000 / FPS;
 
   function resize() {
-    canvas.width  = Math.floor(window.innerWidth  / CHAR_SIZE) * CHAR_SIZE;
+    canvas.width  = Math.floor(window.innerWidth / CHAR_SIZE) * CHAR_SIZE;
     canvas.height = Math.floor(window.innerHeight / CHAR_SIZE) * CHAR_SIZE;
   }
+
   resize();
 
-  const cols  = Math.floor(canvas.width / CHAR_SIZE);
-  const drops = Array(cols).fill(1);
+  let cols  = Math.floor(canvas.width / CHAR_SIZE);
+  let drops = Array(cols).fill(1);
   const chars = '01アイウエカキクケサシスタチ'.split('');
 
   let lastTime = 0;
@@ -416,18 +461,26 @@ function initMatrixRain() {
 
   function draw(timestamp) {
     rafId = requestAnimationFrame(draw);
-    if (timestamp - lastTime < INTERVAL) return; // throttle to target FPS
+
+    if (timestamp - lastTime < INTERVAL) return;
+
     lastTime = timestamp;
 
     ctx.fillStyle = 'rgba(0,0,0,0.08)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillStyle = '#00cc33';
     ctx.font = `${CHAR_SIZE - 2}px monospace`;
 
     for (let i = 0; i < drops.length; i++) {
       const char = chars[Math.floor(Math.random() * chars.length)];
+
       ctx.fillText(char, i * CHAR_SIZE, drops[i] * CHAR_SIZE);
-      if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) drops[i] = 0;
+
+      if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+
       drops[i]++;
     }
   }
@@ -446,9 +499,16 @@ function initMatrixRain() {
 
   // Debounce resize - avoids recalculating on every pixel change
   let resizeTimer;
+
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(resize, 200);
+
+    resizeTimer = setTimeout(() => {
+      resize();
+
+      cols = Math.floor(canvas.width / CHAR_SIZE);
+      drops = Array(cols).fill(1);
+    }, 200);
   });
 }
 
@@ -457,10 +517,12 @@ function initMatrixRain() {
 // Refreshes every second.
 function initClock() {
   const el = document.getElementById('clock');
+
   function tick() {
     const now = new Date();
     el.textContent = now.toLocaleTimeString('en-GB');
   }
+
   tick();
   setInterval(tick, 1000);
 }
@@ -470,6 +532,8 @@ function initClock() {
 // Loads the correct page based on the current URL.
 initMatrixRain();
 initClock();
+
 const initialPath = window.location.pathname === '/' ? '/dashboard' : window.location.pathname;
+
 loadPage(initialPath);
 updateNav(initialPath);
