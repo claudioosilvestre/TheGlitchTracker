@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Glitch Tracker // Oracle System</title>
+  <link rel="stylesheet" href="oracle.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- SCANLINE OVERLAY -->
+  <div class="scanlines"></div>
+  <div class="matrix-rain" id="matrixRain"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <span class="oracle-tag">&gt; ORACLE_SYSTEM</span>
+      <span class="blink">█</span>
+    </div>
+    <h1 class="header-title">THE GLITCH TRACKER</h1>
+    <div class="header-right">
+      <span class="status-dot"></span>
+      <span id="clock" class="clock"></span>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="/dashboard" class="nav-link active" data-page="dashboard">&gt; DASHBOARD</a>
+    <a href="/new-glitch" class="nav-link" data-page="new-glitch">&gt; REPORT GLITCH</a>
+    <a href="/operatives" class="nav-link" data-page="operatives">&gt; OPERATIVES</a>
+  </nav>
+
+ <!-- MAIN CONTENT - Injected by JS -->
+  <main class="main" id="app"></main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span>"👁️⃤ -- I'm going to show these people what you don't want them to see -- 👁️⃤"</span>
+    <span class="footer-right">NEBUCHADNEZZAR // CREW TERMINAL</span> <!-- NEBUCHADNEZZAR é a nave principal usada por uma personagem no Matrix (onde vive a Equipa) -->
+  </footer>
+
+  <script src="oracle.js"></script>
+</body>
+</html>
