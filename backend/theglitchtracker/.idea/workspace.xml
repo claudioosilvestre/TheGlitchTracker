@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/config.properties.example" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/config.properties.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factorie/OpenAiApiFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factories/OpenAiApiFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factorie/OpenAiChatModelFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factories/OpenAiChatModelFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factorie/OpenAiChatOptionsFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factories/OpenAiChatOptionsFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factorie/OpenAiEmbeddingOptionsFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factories/OpenAiEmbeddingOptionsFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factorie/SimpleVectorStoreFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/factories/SimpleVectorStoreFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/ai.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/spring/ai.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +76,7 @@
       <workItem from="1777789725429" duration="10286000" />
       <workItem from="1777800053869" duration="2851000" />
       <workItem from="1777911220261" duration="3356000" />
-      <workItem from="1777914768907" duration="291000" />
+      <workItem from="1777914768907" duration="1009000" />
     </task>
     <servers />
   </component>

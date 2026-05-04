@@ -14,4 +14,4 @@ public interface AiService {
      */
     public Generation info(String question);
 }
-}
+

@@ -1,4 +1,4 @@
-package com.theglitchtracker.factorie;
+package com.theglitchtracker.factories;
 
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
