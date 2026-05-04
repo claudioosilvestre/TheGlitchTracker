@@ -288,8 +288,8 @@ function showMsg(id, customText) {
 }
 
 // OPERATIVES
-// Renders the operatives page.
-// Shows all users and how many active glitches they have assigned.
+// Renders the operatives page
+// Shows all users and how many active glitches they have assigned
 async function renderOperatives() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; LOADING OPERATIVE ROSTER...</div>`;
