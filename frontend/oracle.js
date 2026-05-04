@@ -33,6 +33,14 @@ const priorityClass = {
   'Deja Vu':     'priority-low',
 };
 
+// STATUS FLOW
+// Defines the next status when a glitch moves forward in the Kanban board.
+const nextStatus = {
+  'Identified': 'Bending the Rules',
+  'Bending the Rules': 'System Fixed',
+  'System Fixed': null,
+};
+
 // ROUTER (History API)
 const routes = {
   '/dashboard':  renderDashboard,
@@ -209,18 +217,28 @@ function renderColumn(title, cssClass, glitches) {
 }
 
 // Renders an individual glitch card.
-// Displays ID, title, priority and assigned user.
+// Displays ID, title, priority, assigned user and a button to move status forward.
 function renderCard(g) {
   const pClass = priorityClass[g.priority] || 'priority-low';
+  const next = nextStatus[g.status];
 
   return `
-    <div class="glitch-card">
+    <div class="glitch-card" data-id="${g.id}">
       <div class="card-id">#GLT-${String(g.id).padStart(4, '0')}</div>
       <div class="card-title">${g.title}</div>
+
       <div class="card-footer">
         <span class="priority-badge ${pClass}">${g.priority}</span>
         <span class="card-assignee">@${g.assignedTo}</span>
       </div>
+
+      ${
+        next
+          ? `<button class="btn-next-status" data-id="${g.id}" data-next="${next}">
+              →
+            </button>`
+          : ''
+      }
     </div>
   `;
 }
@@ -419,7 +437,7 @@ async function renderOperatives() {
           <img src="${u.avatar}" alt="${u.name}" />
         </div>
         <div class="operative-name">${u.name}</div>
-        <div class="operative-role">${u.role}</div>
+        <div classs="operative-role">${u.role}</div>
         <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
       </div>
     `;
@@ -430,6 +448,27 @@ async function renderOperatives() {
     <div class="operatives-grid">${cards}</div>
   `;
 }
+
+// Handles clicks on the Kanban card status button.
+// Moves the glitch to the next column and refreshes the dashboard without reloading the page.
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.btn-next-status');
+
+  if (!btn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const id = Number(btn.dataset.id);
+  const next = btn.dataset.next;
+
+  try {
+    await updateGlitchStatus(id, next);
+    renderDashboard();
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 // MATRIX RAIN (Canvas)
 // Creates the Matrix "rain" animation using a canvas element.
