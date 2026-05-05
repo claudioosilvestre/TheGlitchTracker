@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
+/* NOTA: variáveis globais de cor (verde terminal antigo) para facilitar manutenção */
 :root {
   --green: #00ff41;
   --green-dim: #00cc33;
@@ -19,6 +20,7 @@
   --font-display: 'Orbitron', monospace;
 }
 
+/* NOTA: garantia que o layout ocupa  o ecra todo e sem margens */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -31,6 +33,7 @@ html, body {
 }
 
 /* ── SCANLINES ── */
+/* NOTA: riscas horizontais semitransparentes sobre todo o site */
 .scanlines {
   position: fixed;
   inset: 0;
@@ -55,6 +58,7 @@ html, body {
 }
 
 /* ── HEADER ── */
+/* NOTA: estilo do topo com brilho neon (box-shadow) e borda inferior brilhante */
 .header {
   position: relative;
   z-index: 10;
@@ -82,6 +86,7 @@ html, body {
   letter-spacing: 0.1em;
 }
 
+/* NOTA: animação do cursor (pisca pisca) do terminal */
 .blink {
   animation: blink 1s step-end infinite;
   color: var(--green);
@@ -91,6 +96,7 @@ html, body {
 
 .header-right { display: flex; align-items: center; gap: 0.75rem; }
 
+/* NOTA: pontinho do status verde com animação tipo pulsação */
 .status-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
@@ -107,6 +113,7 @@ html, body {
 .clock { font-size: 0.8rem; color: var(--green-dim); }
 
 /* ── NAV ── */
+/* NOTA: Barra de navegação com aspeto de separadores que faz lembrar os sistema antigo */
 .nav {
   position: relative;
   z-index: 10;
@@ -156,6 +163,7 @@ html, body {
 .page-title span { color: var(--green); }
 
 /* ── STATS BAR ── */
+/* NOTA: statistic no topo da Dashboard (ex: Total de Erros) */
 .stats-bar {
   display: flex;
   gap: 1.5rem;
@@ -175,6 +183,7 @@ html, body {
 .stat-chip strong { color: var(--green); font-size: 1rem; display: block; }
 
 /* ── KANBAN BOARD ── */
+/* NOTA: Layout em grelha de 3 colunas para o quadro Kanban (Identified, In Progress, Fixed) */
 .kanban-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -190,6 +199,7 @@ html, body {
   position: relative;
 }
 
+/* NOTA: Barra de cor no topo de cada coluna do Kanban para identificar o estado */
 .kanban-col::before {
   content: '';
   position: absolute;
@@ -232,6 +242,7 @@ html, body {
 .col-cards { display: flex; flex-direction: column; gap: 0.6rem; min-height: 80px; }
 
 /* ── GLITCH CARD ── */
+/* NOTA: estilo dos cards individuais de erro com animação de entrada */
 .glitch-card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -272,6 +283,7 @@ html, body {
   gap: 0.3rem;
 }
 
+/* NOTA: Badges de prioridade com cores específicas (Crítico, Alto, Médio, Baixo) */
 .priority-badge {
   font-size: 0.6rem;
   padding: 0.15rem 0.5rem;
@@ -300,6 +312,7 @@ html, body {
 }
 
 /* ── FORM PAGE ── */
+/* NOTA: formatação dos campos do formulário [coerência visual do terminal] */
 .form-container {
   max-width: 600px;
 }
@@ -342,12 +355,7 @@ html, body {
   color: #00ff41;
 }
 
-.form-select option:checked,
-.form-select option:hover {
-  background-color: #003b00;
-  color: #00ff41;
-}
-
+/* NOTA: botão de sumbit no report glitch com efeito ao passar o rato */
 .btn-submit {
   background: transparent;
   border: 1px solid var(--green);
@@ -380,6 +388,7 @@ html, body {
 .msg.show    { display: block; animation: cardIn 0.3s ease; }
 
 /* ── OPERATIVES PAGE ── */
+/* NOTA: Responsive Grid para exibir os perfis dos Opeatives */
 .operatives-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -396,6 +405,7 @@ html, body {
 
 .operative-card:hover { border-color: var(--green-dim); }
 
+/* NOTA: Avatar circular com moldura neon */
 .operative-avatar {
   width: 90px;
   height: 90px;
@@ -426,12 +436,6 @@ html, body {
   color: var(--green-dim);
 }
 
-.operative-count {
-  margin-top: 0.6rem;
-  font-size: 0.68rem;
-  color: var(--text-dim);
-}
-
 /* ── LOADING ── */
 .loading {
   text-align: center;
@@ -458,12 +462,14 @@ html, body {
 }
 
 /* ── SCROLLBAR ── */
+/* NOTA: formatting da barra de scroll - tema escuro/verde */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); }
 ::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
 
 /* ── CUSTOM DROPDOWN ── */
+/* NOTA: style para um seletor personalizado (dropdown) que substitui o padrão do browser - firefox*/
 .dd-wrapper {
   position: relative;
   width: 100%;
@@ -480,7 +486,7 @@ html, body {
   padding: 0.6rem 2rem 0.6rem 0.8rem;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
-  /* Arrow indicator */
+  /* NOTA TBC: Ícone de seta via SVG embutido no background */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff41' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.8rem center;
@@ -524,11 +530,7 @@ html, body {
   color: var(--green);
 }
 
-.dd-option.active {
-  background: var(--green-dark);
-  color: var(--green);
-}
-
+/* NOTA: botão de mudança de estado nos cartões do Kanban - precisa de melhorias! */
 .btn-next-status {
   margin-top: 0.8rem;
   width: 100%;

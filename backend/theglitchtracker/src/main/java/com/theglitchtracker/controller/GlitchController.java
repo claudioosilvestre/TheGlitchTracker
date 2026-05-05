@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.theglitchtracker.dtos.GlitchUserDTO;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/glitches")
 public class GlitchController {
@@ -57,6 +59,23 @@ public class GlitchController {
     public ResponseEntity<Glitch> updatePriority(@PathVariable int id, @RequestBody Glitch glitch) {
 
         Glitch updatedGlitch = glitchService.updateGlitchPriority(id, glitch.getGlitchPriority());
+
+        return ResponseEntity.ok(updatedGlitch);
+    }
+
+    @PatchMapping("/{id}/users")
+    public ResponseEntity<Glitch> addUserToGlitch(@PathVariable int id, @RequestBody GlitchUserDTO glitchUserDTO) {
+
+
+        Glitch updatedGlitch = glitchService.addUserToGlitch(id, glitchUserDTO.getUserId());
+
+        return ResponseEntity.ok(updatedGlitch);
+    }
+
+    @DeleteMapping("/{id}/users/{userId}")
+    public ResponseEntity<Glitch> removeUserFromGlitch(@PathVariable int id, @PathVariable int userId) {
+
+        Glitch updatedGlitch = glitchService.removeUserFromGlitch(id, userId);
 
         return ResponseEntity.ok(updatedGlitch);
     }

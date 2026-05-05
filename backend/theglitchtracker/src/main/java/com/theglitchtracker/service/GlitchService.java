@@ -20,5 +20,10 @@ public interface GlitchService {
 
     public Glitch updateGlitchPriority(int glitchId, GlitchPriority glitchPriority);
 
+    public Glitch addUserToGlitch(int glitchId, int userId);
+
+    public Glitch removeUserFromGlitch(int glitchId, int userId);
+
     public void deleteGlitch(int glitchId);
 }
+

@@ -1,9 +1,8 @@
 
-// When the backend is ready we MUST change this line
+// NOTA: Define a URL base para as chamadas de API. Atualmente aponta para o localhost.
 const API_BASE = 'http://localhost:8080/api';
 
-// ATTENTION: this is the MOCK DATA until the backend isn't ready! THEN the fetchGlitches/fetchUsers functions will to the job.
-
+// NOTA: Dados fictícios (Mock) para simular falhas no sistema Matrix enquanto o servidor não está ligado.
 let MOCK_GLITCHES = [
   { id: 1, title: "Agent detected near the Oracle's kitchen", description: "System anomaly in sector 7G. Possible Smith replication.", status: "Identified", priority: "Agent Smith", assignedTo: "Neo" },
   { id: 2, title: "Déjà vu loop in Mega City East", description: "Cat seen twice. Matrix being altered.", status: "Identified", priority: "Deja Vu", assignedTo: "Trinity" },
@@ -14,13 +13,14 @@ let MOCK_GLITCHES = [
 ];
 
 const MOCK_USERS = [
-  { id: 1, name: "Neo",      role: "The One",        avatar: "🕶️" },
-  { id: 2, name: "Trinity",  role: "Operative",      avatar: "🔫" },
-  { id: 3, name: "Morpheus", role: "Captain",        avatar: "🚢" },
-  { id: 4, name: "Tank",     role: "Operator",       avatar: "💻" },
+  { id: 1, name: "Neo",      role: "The One",   avatar: "frontend/images/Neo.jpeg" },
+  { id: 2, name: "Trinity",  role: "Operative", avatar: "frontend/images/Trinity.png" },
+  { id: 3, name: "Morpheus", role: "Captain",   avatar: "frontend/images/Morpheus.jpg" },
+  { id: 4, name: "Tank",     role: "Operator",  avatar: "frontend/images/Tank.jpg" },
 ];
 
 // PRIORITY MAP
+// NOTA: mapa de níveis de ameaça para classes CSS de cores (definidas no oracle.css).
 const priorityClass = {
   'Agent Smith': 'priority-critical',
   'High Alert':  'priority-high',
@@ -28,15 +28,23 @@ const priorityClass = {
   'Deja Vu':     'priority-low',
 };
 
-// ROUTER (History API)
-const routes = {
-  '/dashboard':   renderDashboard,
-  '/new-glitch':  renderNewGlitch,
-  '/operatives':  renderOperatives,
+// STATUS FLOW
+// NOTA: Define a ordem lógica do quadro Kanban: Identified -> Bending the Rules -> System Fixed.
+const nextStatus = {
+  'Identified': 'Bending the Rules',
+  'Bending the Rules': 'System Fixed',
+  'System Fixed': null,
 };
 
-// Navigates to a new "page" without reloading the browser.
-// Updates the URL using the History API and renders the correct view.
+// ROUTER (History API)
+// NOTA: Objeto que faz o mapping as rotas da URL para as funções de renderização de cada página.
+const routes = {
+  '/dashboard':  renderDashboard,
+  '/new-glitch': renderNewGlitch,
+  '/operatives': renderOperatives,
+};
+
+// NOTA: Função principal da SPA. Muda o URL sem recarregar a página e chama o loadPage.
 function navigate(path) {
   window.history.pushState({}, '', path);
   loadPage(path);
@@ -66,8 +74,7 @@ window.addEventListener('popstate', () => {
   updateNav(path);
 });
 
-// Intercepts clicks on navigation links.
-// Prevents full page reload and uses SPA navigation instead.
+// NOTA: Este Listener impede que o browser faça o refresh normal, usando a função navigate() em vez disso.
 document.addEventListener('click', e => {
   const link = e.target.closest('.nav-link');
   if (link) {
@@ -77,11 +84,12 @@ document.addEventListener('click', e => {
 });
 
 // API FUNCTIONS
-// fucntions ready to connect to backend - while not ready we're using mock data.
+// Functions ready to connect to backend - while not ready we're using mock data.
 
-const USE_MOCK = true; // to be chandef to false when backedn os ready OR adjust we'll need to agree on approach
+const USE_MOCK = true; // to be changed to false when backend is ready
 
-// Fetches all glitches from backend (now it's fromn mock data - REMOVE THIS COMMENT LATER when Backend connection is done)
+// Fetches all glitches from backend (now it's from mock data).
+// REMOVE THE MOCK COMMENT when backend connection is done.
 // Returns a list of glitch objects.
 async function fetchGlitches() {
   if (USE_MOCK) return MOCK_GLITCHES;
@@ -90,8 +98,7 @@ async function fetchGlitches() {
   return res.json();
 }
 
-// Fetches all users from backend (now it's fromn mock data - REMOVE THIS COMMENT LATER when Backend connection is done)
-// Returns a list of user objects.
+// Fetches all users from backend (now it's from mock data).
 async function fetchUsers() {
   if (USE_MOCK) return MOCK_USERS;
   const res = await fetch(`${API_BASE}/users`);
@@ -99,7 +106,7 @@ async function fetchUsers() {
   return res.json();
 }
 
-// Sends a new glitch to the backend (now it adds to mock - REMOVE THIS COMMENT LATER when Backend connection is done)
+// Sends a new glitch to the backend (now it adds to mock).
 // Automatically assigns a unique ID and default status.
 async function postGlitch(glitchData) {
   if (USE_MOCK) {
@@ -107,27 +114,32 @@ async function postGlitch(glitchData) {
     MOCK_GLITCHES.push(newGlitch);
     return newGlitch;
   }
+
   const res = await fetch(`${API_BASE}/glitches`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(glitchData),
   });
+
   if (!res.ok) throw new Error('Failed to create glitch');
   return res.json();
 }
 
-// Updates the status of a glitch (e.g., Identified → Fixed)
+// Updates the status of a glitch (e.g., Identified -> System Fixed).
+// NOTA: Função usada para MOVER o glitch para a próxima coluna do Kanban.
 async function updateGlitchStatus(id, status) {
   if (USE_MOCK) {
     const g = MOCK_GLITCHES.find(g => g.id === id);
     if (g) g.status = status;
     return g;
   }
+
   const res = await fetch(`${API_BASE}/glitches/${id}/status`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status }),
   });
+
   if (!res.ok) throw new Error('Failed to update status');
   return res.json();
 }
@@ -137,11 +149,13 @@ async function updateGlitchStatus(id, status) {
 // DASHBOARD
 // Renders the main dashboard view.
 // Displays statistics and organizes glitches into columns.
+// NOTA: Reconstrói o HTML da dashboard, filtrando os glitches por status para as colunas.
 async function renderDashboard() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; SCANNING MATRIX FOR ANOMALIES...</div>`;
 
   let glitches;
+
   try {
     glitches = await fetchGlitches();
   } catch (err) {
@@ -150,14 +164,13 @@ async function renderDashboard() {
   }
 
   const cols = {
-    'Identified':       glitches.filter(g => g.status === 'Identified'),
+    'Identified':        glitches.filter(g => g.status === 'Identified'),
     'Bending the Rules': glitches.filter(g => g.status === 'Bending the Rules'),
-    'System Fixed':     glitches.filter(g => g.status === 'System Fixed'),
+    'System Fixed':      glitches.filter(g => g.status === 'System Fixed'),
   };
 
-  const total    = glitches.length;
-  const critical = glitches.filter(g => g.priority === 'Agent Smith').length;
-  const fixed    = cols['System Fixed'].length;
+  const total = glitches.length;
+  const fixed = cols['System Fixed'].length;
 
   app.innerHTML = `
     <div class="page-title">&gt; MATRIX_ANOMALY_DASHBOARD // <span>LIVE FEED</span></div>
@@ -167,7 +180,6 @@ async function renderDashboard() {
       <div class="stat-chip"><strong>${cols['Identified'].length}</strong>Identified</div>
       <div class="stat-chip"><strong>${cols['Bending the Rules'].length}</strong>In Progress</div>
       <div class="stat-chip"><strong>${fixed}</strong>System Fixed</div>
-      <div class="stat-chip"><strong>${critical}</strong>⚠ Agent Smith Level</div>
     </div>
 
     <div class="kanban-board">
@@ -179,7 +191,6 @@ async function renderDashboard() {
 }
 
 // Renders a single column in the Kanban board.
-// Each column represents a status (Identified, In Progress, Fixed).
 function renderColumn(title, cssClass, glitches) {
   return `
     <div class="kanban-col ${cssClass}">
@@ -197,104 +208,196 @@ function renderColumn(title, cssClass, glitches) {
   `;
 }
 
-// Renders an individual glitch card
-// Displays ID, title, priority and assigned user
+// Renders an individual glitch card.
+// NOTA: Gera o cartão. Se houver um "próximo estado" (next), adiciona o botão de seta (ao ultimo nao adiciona)
 function renderCard(g) {
   const pClass = priorityClass[g.priority] || 'priority-low';
+  const next = nextStatus[g.status];
+
   return `
-    <div class="glitch-card">
+    <div class="glitch-card" data-id="${g.id}">
       <div class="card-id">#GLT-${String(g.id).padStart(4, '0')}</div>
       <div class="card-title">${g.title}</div>
+
       <div class="card-footer">
         <span class="priority-badge ${pClass}">${g.priority}</span>
-        <span class="card-assignee">@${g.assignedTo || 'Unassigned'}</span>
+        <span class="card-assignee">@${g.assignedTo}</span>
       </div>
+
+      ${
+        next
+          ? `<button class="btn-next-status" data-id="${g.id}" data-next="${next}">
+              →
+            </button>`
+          : ''
+      }
     </div>
   `;
 }
 
 // NEW GLITCH FORM
 // Renders the form to create a new glitch.
-// Loads users and allows assigning a glitch to an operative.
+// NOTA: Implementa dropdowns customizados para evitar bugs de cores em browsers como Firefox!
 async function renderNewGlitch() {
   const app = document.getElementById('app');
   let users = [];
-  try { users = await fetchUsers(); } catch {}
 
-  const userOptions = users.map(u => `<option value="${u.name}">${u.name}</option>`).join('');
+  try {
+    users = await fetchUsers();
+  } catch {}
+
+  const priorityOptions = [
+    { value: '', label: '-- Choose priority --' },
+    { value: 'Agent Smith', label: 'Agent Smith — Critical' },
+    { value: 'High Alert',  label: 'High Alert' },
+    { value: 'Glitch',      label: 'Glitch — Medium' },
+    { value: 'Deja Vu',     label: 'Déjà Vu — Low' },
+  ];
+
+  const assignOptions = [
+    { value: '', label: '-- Choose operative --' },
+    ...users.map(u => ({ value: u.name, label: u.name })),
+  ];
+
+  // Builds a fully custom dropdown (replaces native <select> for Firefox fix!)
+  function buildDropdown(id, options) {
+    const items = options.map(o =>
+      `<div class="dd-option" data-value="${o.value}">${o.label}</div>`
+    ).join('');
+
+    return `
+      <div class="dd-wrapper" id="${id}-wrapper">
+        <div class="dd-selected" id="${id}-selected">${options[0].label}</div>
+        <div class="dd-list" id="${id}-list">${items}</div>
+        <input type="hidden" id="${id}" value="${options[0].value}" />
+      </div>
+    `;
+  }
 
   app.innerHTML = `
     <div class="page-title">&gt; REPORT_NEW_GLITCH // <span>OPERATIVE INPUT</span></div>
+
     <div class="form-container">
       <div class="form-group">
         <label class="form-label">Glitch Title *</label>
-        <input class="form-input" id="f-title" type="text" placeholder="Describe the anomaly..." />
+        <input class="form-input" id="f-title" type="text" placeholder="Give your Glitch a Title..." />
       </div>
+
       <div class="form-group">
         <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="f-desc" placeholder="Additional intel..."></textarea>
+        <textarea class="form-textarea" id="f-desc" placeholder="Describe the Anomaly..."></textarea>
       </div>
+
       <div class="form-group">
         <label class="form-label">Threat Level (Priority) *</label>
-        <select class="form-select" id="f-priority">
-          <option value="Agent Smith">Agent Smith — Critical</option>
-          <option value="High Alert">High Alert</option>
-          <option value="Glitch">Glitch — Medium</option>
-          <option value="Deja Vu">Déjà Vu — Low</option>
-        </select>
+        ${buildDropdown('f-priority', priorityOptions)}
       </div>
+
       <div class="form-group">
-        <label class="form-label">Assign to Operative</label>
-        <select class="form-select" id="f-assign">
-          <option value="">-- Unassigned --</option>
-          ${userOptions}
-        </select>
+        <label class="form-label">Assign to Operative *</label>
+        ${buildDropdown('f-assign', assignOptions)}
       </div>
+
       <button class="btn-submit" id="btn-submit">&gt; INJECT INTO SYSTEM</button>
+
       <div class="msg success" id="msg-ok">&gt; GLITCH LOGGED. THE ORACLE HAS BEEN NOTIFIED.</div>
       <div class="msg error" id="msg-err">&gt; TRANSMISSION FAILED. TRY AGAIN.</div>
     </div>
   `;
 
+  // Initializes each custom dropdown: toggle open/close and select an option.
+  function initDropdown(id) {
+    const selected = document.getElementById(`${id}-selected`);
+    const list     = document.getElementById(`${id}-list`);
+    const hidden   = document.getElementById(id);
+
+    selected.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.dd-list.open').forEach(l => {
+        if (l !== list) l.classList.remove('open');
+      });
+      list.classList.toggle('open');
+    });
+
+    list.querySelectorAll('.dd-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selected.textContent = opt.textContent;
+        hidden.value = opt.dataset.value;
+        list.classList.remove('open');
+        list.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+      });
+    });
+  }
+
+  initDropdown('f-priority');
+  initDropdown('f-assign');
+
+  // Close dropdowns when clicking outside - se nao tivesse isto a lista do dropdwn ficava ali solta
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.dd-list.open').forEach(l => l.classList.remove('open'));
+  });
+
+  // NOTA: Lógica de submissão do formulário. Valida campos e envia para a "API" (postGlitch).
   document.getElementById('btn-submit').addEventListener('click', async () => {
-    const title    = document.getElementById('f-title').value.trim();
-    const desc     = document.getElementById('f-desc').value.trim();
-    const priority = document.getElementById('f-priority').value;
-    const assignedTo = document.getElementById('f-assign').value || 'Unassigned';
+    const title      = document.getElementById('f-title').value.trim();
+    const desc       = document.getElementById('f-desc').value.trim();
+    const priority   = document.getElementById('f-priority').value;
+    const assignedTo = document.getElementById('f-assign').value;
 
     if (!title) {
       showMsg('msg-err', 'ERROR: Glitch title is required.');
       return;
     }
 
+    if (!priority) {
+      showMsg('msg-err', 'ERROR: Threat level is required.');
+      return;
+    }
+
+    if (!assignedTo) {
+      showMsg('msg-err', 'ERROR: Assign an operative.');
+      return;
+    }
+
     try {
       await postGlitch({ title, description: desc, priority, assignedTo });
       showMsg('msg-ok');
+
+      // Limpeza do formulário após sucesso - tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
       document.getElementById('f-title').value = '';
       document.getElementById('f-desc').value  = '';
+      document.getElementById('f-priority-selected').textContent = '-- Choose priority --';
+      document.getElementById('f-priority').value = '';
+      document.getElementById('f-assign-selected').textContent = '-- Choose operative --';
+      document.getElementById('f-assign').value = '';
+      document.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
     } catch (err) {
       showMsg('msg-err', `ERROR: ${err.message}`);
     }
   });
 }
 
-// Displays a temporary success or error message.
-// Automatically hides after a few seconds
+// Displays a temporary success or error message.- tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
 function showMsg(id, customText) {
   const el = document.getElementById(id);
   if (customText) el.textContent = `> ${customText}`;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 4000);
+  setTimeout(() => {
+    el.classList.remove('show');
+  }, 4000);
 }
 
 // OPERATIVES
-// Renders the operatives page
-// Shows all users and how many active glitches they have assigned
+// Renders the operatives page.
+// NOTA: Carrega a lista de operativos e conta quantos glitches ativos cada um tem atribuídos.
 async function renderOperatives() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; LOADING OPERATIVE ROSTER...</div>`;
 
   let users, glitches;
+
   try {
     [users, glitches] = await Promise.all([fetchUsers(), fetchGlitches()]);
   } catch (err) {
@@ -304,11 +407,14 @@ async function renderOperatives() {
 
   const cards = users.map(u => {
     const count = glitches.filter(g => g.assignedTo === u.name && g.status !== 'System Fixed').length;
+
     return `
       <div class="operative-card">
-        <div class="operative-avatar">${u.avatar || '👤'}</div>
+        <div class="operative-avatar">
+          <img src="${u.avatar}" alt="${u.name}" />
+        </div>
         <div class="operative-name">${u.name}</div>
-        <div class="operative-role">${u.role}</div>
+        <div classs="operative-role">${u.role}</div>
         <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
       </div>
     `;
@@ -318,46 +424,103 @@ async function renderOperatives() {
     <div class="page-title">&gt; NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span></div>
     <div class="operatives-grid">${cards}</div>
   `;
+}
 
-  // MATRIX RAIN (Canvas)
-// Creates the Matrix "rain" animation using a canvas element.
-// Continuously draws falling characters on the screen.
+// Handles clicks on the Kanban card status button.
+// NOTA: Listener global para capturar cliques no botão de mudar status e atualizar a view.
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.btn-next-status');
+  if (!btn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const id = Number(btn.dataset.id);
+  const next = btn.dataset.next;
+
+  try {
+    await updateGlitchStatus(id, next);
+    renderDashboard();
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// MATRIX RAIN (Canvas)
+// NOTA: Cria a animação clássica de queda de caracteres verdes num elemento <canvas> - chars = '01アイウエカキクケサシスタチ'.
 function initMatrixRain() {
   const container = document.getElementById('matrixRain');
   const canvas = document.createElement('canvas');
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  const CHAR_SIZE = 22;
+  const FPS       = 24;
+  const INTERVAL  = 1000 / FPS;
 
-  const cols   = Math.floor(canvas.width / 16);
-  const drops  = Array(cols).fill(1);
-  const chars  = '01アイウエオカキクケコサシスセソタチ'.split('');
-
-  function draw() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#00ff41';
-    ctx.font = '14px Share Tech Mono';
-    drops.forEach((y, i) => {
-      const char = chars[Math.floor(Math.random() * chars.length)];
-      ctx.fillText(char, i * 16, y * 16);
-      if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-      drops[i]++;
-    });
+  function resize() {
+    canvas.width  = Math.floor(window.innerWidth / CHAR_SIZE) * CHAR_SIZE;
+    canvas.height = Math.floor(window.innerHeight / CHAR_SIZE) * CHAR_SIZE;
   }
 
-  setInterval(draw, 60);
+  resize();
+
+  let cols  = Math.floor(canvas.width / CHAR_SIZE);
+  let drops = Array(cols).fill(1);
+  const chars = '01アイウエカキクケサシスタチ'.split('');
+
+  let lastTime = 0;
+  let rafId;
+
+  function draw(timestamp) {
+    rafId = requestAnimationFrame(draw);
+    if (timestamp - lastTime < INTERVAL) return;
+    lastTime = timestamp;
+
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#00ff41';
+    ctx.shadowColor = '#00ff41';
+    ctx.shadowBlur = 8;
+    ctx.font = `${CHAR_SIZE}px Share Tech Mono, monospace`;
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(char, i * CHAR_SIZE, drops[i] * CHAR_SIZE);
+
+      if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  rafId = requestAnimationFrame(draw);
+
+  // NOTA: Desativa a animação se a page não tiver visível para poupar recursos.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(rafId);
+    } else {
+      lastTime = 0;
+      rafId = requestAnimationFrame(draw);
+    }
+  });
+
+  let resizeTimer;
   window.addEventListener('resize', () => {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      resize();
+      cols = Math.floor(canvas.width / CHAR_SIZE);
+      drops = Array(cols).fill(1);
+    }, 200);
   });
 }
 
 // CLOCK
-// Initializes and updates the live clock in the header.
-// Refreshes every second.
+// NOTA: Inicializa o relógio digital no cabeçalho (vai ser util para quando implementar o created_at e o updated_at e o resolved_at).
 function initClock() {
   const el = document.getElementById('clock');
   function tick() {
@@ -369,13 +532,11 @@ function initClock() {
 }
 
 // INIT
-// Initializes visual effects and clock.
-// Loads the correct page based on the current URL.
+// NOTA: Ponto de entrada do sistema. Ativa os efeitos visuais e carrega a página inicial.
 initMatrixRain();
 initClock();
+
 const initialPath = window.location.pathname === '/' ? '/dashboard' : window.location.pathname;
+
 loadPage(initialPath);
 updateNav(initialPath);
-
-}
-
