@@ -1,14 +1,8 @@
-// ============================================
-//   THE GLITCH TRACKER — ORACLE SYSTEM
-//   oracle.js — SPA Logic + API Integration
-// ============================================
 
-// When the backend is ready we MUST change this line
+// NOTA: Define a URL base para as chamadas de API. Atualmente aponta para o localhost.
 const API_BASE = 'http://localhost:8080/api';
 
-// ATTENTION: this is the MOCK DATA until the backend isn't ready!
-// THEN the fetchGlitches/fetchUsers functions will do the job.
-
+// NOTA: Dados fictícios (Mock) para simular falhas no sistema Matrix enquanto o servidor não está ligado.
 let MOCK_GLITCHES = [
   { id: 1, title: "Agent detected near the Oracle's kitchen", description: "System anomaly in sector 7G. Possible Smith replication.", status: "Identified", priority: "Agent Smith", assignedTo: "Neo" },
   { id: 2, title: "Déjà vu loop in Mega City East", description: "Cat seen twice. Matrix being altered.", status: "Identified", priority: "Deja Vu", assignedTo: "Trinity" },
@@ -26,6 +20,7 @@ const MOCK_USERS = [
 ];
 
 // PRIORITY MAP
+// NOTA: mapa de níveis de ameaça para classes CSS de cores (definidas no oracle.css).
 const priorityClass = {
   'Agent Smith': 'priority-critical',
   'High Alert':  'priority-high',
@@ -34,7 +29,7 @@ const priorityClass = {
 };
 
 // STATUS FLOW
-// Defines the next status when a glitch moves forward in the Kanban board.
+// NOTA: Define a ordem lógica do quadro Kanban: Identified -> Bending the Rules -> System Fixed.
 const nextStatus = {
   'Identified': 'Bending the Rules',
   'Bending the Rules': 'System Fixed',
@@ -42,14 +37,14 @@ const nextStatus = {
 };
 
 // ROUTER (History API)
+// NOTA: Objeto que faz o mapping as rotas da URL para as funções de renderização de cada página.
 const routes = {
   '/dashboard':  renderDashboard,
   '/new-glitch': renderNewGlitch,
   '/operatives': renderOperatives,
 };
 
-// Navigates to a new "page" without reloading the browser.
-// Updates the URL using the History API and renders the correct view.
+// NOTA: Função principal da SPA. Muda o URL sem recarregar a página e chama o loadPage.
 function navigate(path) {
   window.history.pushState({}, '', path);
   loadPage(path);
@@ -79,8 +74,7 @@ window.addEventListener('popstate', () => {
   updateNav(path);
 });
 
-// Intercepts clicks on navigation links.
-// Prevents full page reload and uses SPA navigation instead.
+// NOTA: Este Listener impede que o browser faça o refresh normal, usando a função navigate() em vez disso.
 document.addEventListener('click', e => {
   const link = e.target.closest('.nav-link');
   if (link) {
@@ -105,8 +99,6 @@ async function fetchGlitches() {
 }
 
 // Fetches all users from backend (now it's from mock data).
-// REMOVE THE MOCK COMMENT when backend connection is done.
-// Returns a list of user objects.
 async function fetchUsers() {
   if (USE_MOCK) return MOCK_USERS;
   const res = await fetch(`${API_BASE}/users`);
@@ -115,7 +107,6 @@ async function fetchUsers() {
 }
 
 // Sends a new glitch to the backend (now it adds to mock).
-// REMOVE THE MOCK COMMENT when backend connection is done.
 // Automatically assigns a unique ID and default status.
 async function postGlitch(glitchData) {
   if (USE_MOCK) {
@@ -135,6 +126,7 @@ async function postGlitch(glitchData) {
 }
 
 // Updates the status of a glitch (e.g., Identified -> System Fixed).
+// NOTA: Função usada para MOVER o glitch para a próxima coluna do Kanban.
 async function updateGlitchStatus(id, status) {
   if (USE_MOCK) {
     const g = MOCK_GLITCHES.find(g => g.id === id);
@@ -157,6 +149,7 @@ async function updateGlitchStatus(id, status) {
 // DASHBOARD
 // Renders the main dashboard view.
 // Displays statistics and organizes glitches into columns.
+// NOTA: Reconstrói o HTML da dashboard, filtrando os glitches por status para as colunas.
 async function renderDashboard() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; SCANNING MATRIX FOR ANOMALIES...</div>`;
@@ -198,7 +191,6 @@ async function renderDashboard() {
 }
 
 // Renders a single column in the Kanban board.
-// Each column represents a status (Identified, In Progress, Fixed).
 function renderColumn(title, cssClass, glitches) {
   return `
     <div class="kanban-col ${cssClass}">
@@ -217,7 +209,7 @@ function renderColumn(title, cssClass, glitches) {
 }
 
 // Renders an individual glitch card.
-// Displays ID, title, priority, assigned user and a button to move status forward.
+// NOTA: Gera o cartão. Se houver um "próximo estado" (next), adiciona o botão de seta (ao ultimo nao adiciona)
 function renderCard(g) {
   const pClass = priorityClass[g.priority] || 'priority-low';
   const next = nextStatus[g.status];
@@ -245,8 +237,7 @@ function renderCard(g) {
 
 // NEW GLITCH FORM
 // Renders the form to create a new glitch.
-// Uses custom dropdowns instead of native <select> to fix Firefox color bug.
-// Loads users and allows assigning a glitch to an operative.
+// NOTA: Implementa dropdowns customizados para evitar bugs de cores em browsers como Firefox!
 async function renderNewGlitch() {
   const app = document.getElementById('app');
   let users = [];
@@ -268,7 +259,7 @@ async function renderNewGlitch() {
     ...users.map(u => ({ value: u.name, label: u.name })),
   ];
 
-  // Builds a fully custom dropdown (replaces native <select> for Firefox fix)
+  // Builds a fully custom dropdown (replaces native <select> for Firefox fix!)
   function buildDropdown(id, options) {
     const items = options.map(o =>
       `<div class="dd-option" data-value="${o.value}">${o.label}</div>`
@@ -315,7 +306,6 @@ async function renderNewGlitch() {
   `;
 
   // Initializes each custom dropdown: toggle open/close and select an option.
-  // Closes all other dropdowns when one opens (only one open at a time).
   function initDropdown(id) {
     const selected = document.getElementById(`${id}-selected`);
     const list     = document.getElementById(`${id}-list`);
@@ -323,24 +313,18 @@ async function renderNewGlitch() {
 
     selected.addEventListener('click', (e) => {
       e.stopPropagation();
-
-      // Close all other open dropdowns first
       document.querySelectorAll('.dd-list.open').forEach(l => {
         if (l !== list) l.classList.remove('open');
       });
-
       list.classList.toggle('open');
     });
 
     list.querySelectorAll('.dd-option').forEach(opt => {
       opt.addEventListener('click', (e) => {
         e.stopPropagation();
-
         selected.textContent = opt.textContent;
         hidden.value = opt.dataset.value;
         list.classList.remove('open');
-
-        // Mark the selected option visually
         list.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
         opt.classList.add('active');
       });
@@ -350,11 +334,12 @@ async function renderNewGlitch() {
   initDropdown('f-priority');
   initDropdown('f-assign');
 
-  // Close dropdowns when clicking outside
+  // Close dropdowns when clicking outside - se nao tivesse isto a lista do dropdwn ficava ali solta
   document.addEventListener('click', () => {
     document.querySelectorAll('.dd-list.open').forEach(l => l.classList.remove('open'));
   });
 
+  // NOTA: Lógica de submissão do formulário. Valida campos e envia para a "API" (postGlitch).
   document.getElementById('btn-submit').addEventListener('click', async () => {
     const title      = document.getElementById('f-title').value.trim();
     const desc       = document.getElementById('f-desc').value.trim();
@@ -378,19 +363,15 @@ async function renderNewGlitch() {
 
     try {
       await postGlitch({ title, description: desc, priority, assignedTo });
-
       showMsg('msg-ok');
 
+      // Limpeza do formulário após sucesso - tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
       document.getElementById('f-title').value = '';
       document.getElementById('f-desc').value  = '';
-
-      // Reset dropdowns to placeholder option after successful submit
       document.getElementById('f-priority-selected').textContent = '-- Choose priority --';
       document.getElementById('f-priority').value = '';
-
       document.getElementById('f-assign-selected').textContent = '-- Choose operative --';
       document.getElementById('f-assign').value = '';
-
       document.querySelectorAll('.dd-option').forEach(o => o.classList.remove('active'));
     } catch (err) {
       showMsg('msg-err', `ERROR: ${err.message}`);
@@ -398,15 +379,11 @@ async function renderNewGlitch() {
   });
 }
 
-// Displays a temporary success or error message.
-// Automatically hides after a few seconds.
+// Displays a temporary success or error message.- tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
 function showMsg(id, customText) {
   const el = document.getElementById(id);
-
   if (customText) el.textContent = `> ${customText}`;
-
   el.classList.add('show');
-
   setTimeout(() => {
     el.classList.remove('show');
   }, 4000);
@@ -414,7 +391,7 @@ function showMsg(id, customText) {
 
 // OPERATIVES
 // Renders the operatives page.
-// Shows all users and how many active glitches they have assigned.
+// NOTA: Carrega a lista de operativos e conta quantos glitches ativos cada um tem atribuídos.
 async function renderOperatives() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; LOADING OPERATIVE ROSTER...</div>`;
@@ -450,10 +427,9 @@ async function renderOperatives() {
 }
 
 // Handles clicks on the Kanban card status button.
-// Moves the glitch to the next column and refreshes the dashboard without reloading the page.
+// NOTA: Listener global para capturar cliques no botão de mudar status e atualizar a view.
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('.btn-next-status');
-
   if (!btn) return;
 
   e.preventDefault();
@@ -471,9 +447,7 @@ document.addEventListener('click', async (e) => {
 });
 
 // MATRIX RAIN (Canvas)
-// Creates the Matrix "rain" animation using a canvas element.
-// Continuously draws falling characters on the screen.
-// Uses requestAnimationFrame (not setInterval) to avoid browser crashes.
+// NOTA: Cria a animação clássica de queda de caracteres verdes num elemento <canvas> - chars = '01アイウエカキクケサシスタチ'.
 function initMatrixRain() {
   const container = document.getElementById('matrixRain');
   const canvas = document.createElement('canvas');
@@ -500,16 +474,12 @@ function initMatrixRain() {
 
   function draw(timestamp) {
     rafId = requestAnimationFrame(draw);
-
     if (timestamp - lastTime < INTERVAL) return;
-
     lastTime = timestamp;
 
-    // Lower opacity = longer trail / more visible rain
     ctx.fillStyle = 'rgba(0,0,0,0.04)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Brighter green + glow effect
     ctx.fillStyle = '#00ff41';
     ctx.shadowColor = '#00ff41';
     ctx.shadowBlur = 8;
@@ -517,20 +487,18 @@ function initMatrixRain() {
 
     for (let i = 0; i < drops.length; i++) {
       const char = chars[Math.floor(Math.random() * chars.length)];
-
       ctx.fillText(char, i * CHAR_SIZE, drops[i] * CHAR_SIZE);
 
       if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
-
       drops[i]++;
     }
   }
 
   rafId = requestAnimationFrame(draw);
 
-  // This stops the animation when the tab is not visible - avoids app crash
+  // NOTA: Desativa a animação se a page não tiver visível para poupar recursos.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       cancelAnimationFrame(rafId);
@@ -540,40 +508,31 @@ function initMatrixRain() {
     }
   });
 
-  // Debounce resize - avoids recalculating on every pixel change
   let resizeTimer;
-
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
-
     resizeTimer = setTimeout(() => {
       resize();
-
       cols = Math.floor(canvas.width / CHAR_SIZE);
       drops = Array(cols).fill(1);
     }, 200);
   });
 }
 
-
 // CLOCK
-// Initializes and updates the live clock in the header.
-// Refreshes every second.
+// NOTA: Inicializa o relógio digital no cabeçalho (vai ser util para quando implementar o created_at e o updated_at e o resolved_at).
 function initClock() {
   const el = document.getElementById('clock');
-
   function tick() {
     const now = new Date();
     el.textContent = now.toLocaleTimeString('en-GB');
   }
-
   tick();
   setInterval(tick, 1000);
 }
 
 // INIT
-// Initializes visual effects and clock.
-// Loads the correct page based on the current URL.
+// NOTA: Ponto de entrada do sistema. Ativa os efeitos visuais e carrega a página inicial.
 initMatrixRain();
 initClock();
 
