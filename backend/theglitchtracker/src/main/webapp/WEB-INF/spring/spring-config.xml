@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/data/jpa
+           https://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <!-- Configuration properties -->
     <context:property-placeholder location="classpath:config.properties" />
 
-    <!-- Base package to search for spring beans -->
     <context:component-scan base-package="com.theglitchtracker"/>
 
-    <!-- Use @Controller, @Service annotations -->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- Ativa os Spring Data JPA repositories -->
+    <jpa:repositories base-package="com.theglitchtracker.repository"
+                      entity-manager-factory-ref="emFactory"/>
 
     <import resource="persistence.xml"/>
     <import resource="presentation.xml"/>
-    <import resource="ai.xml" />
+    <import resource="ai.xml"/>
 
 </beans>

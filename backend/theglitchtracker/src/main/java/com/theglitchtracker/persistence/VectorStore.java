@@ -29,7 +29,7 @@ public class VectorStore {
     @Value("${ai.vector_store_file}")
     private String storeFilePath;
 
-    @Value("${ai.rag_documents}")
+    @Value("${ai.rag_documents}:")
     private List<Resource> ragResources;
 
     @Value("${ai.rag_number_results}")
@@ -51,19 +51,21 @@ public class VectorStore {
             System.out.println("Found vector store, loading...");
             vectorStore.load(storeFile);
         } else {
-            ragResources.forEach(resource -> {
-                System.out.println("Found document: " + resource.getFilename());
+            if (ragResources != null && !ragResources.isEmpty()) {
+                ragResources.forEach(resource -> {
+                    System.out.println("Found document: " + resource.getFilename());
 
-                TikaDocumentReader documentReader = new TikaDocumentReader(resource);
-                List<Document> docs = documentReader.get();
+                    TikaDocumentReader documentReader = new TikaDocumentReader(resource);
+                    List<Document> docs = documentReader.get();
 
-                TextSplitter textSplitter = new TokenTextSplitter();
-                List<Document> splitDocs = textSplitter.apply(docs);
+                    TextSplitter textSplitter = new TokenTextSplitter();
+                    List<Document> splitDocs = textSplitter.apply(docs);
 
-                vectorStore.add(splitDocs);
-            });
+                    vectorStore.add(splitDocs);
+                });
 
-            vectorStore.save(storeFile);
+                vectorStore.save(storeFile);
+            }
         }
     }
 
