@@ -1,0 +1,2 @@
+-- seeds
+SELECT 1;
