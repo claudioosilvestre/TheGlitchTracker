@@ -1,6 +1,6 @@
 package com.theglitchtracker.service;
 
-import com.theglitchtracker.persistence.VectorStore;
+import com.theglitchtracker.persistence.RagVectorStoreService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -25,7 +25,7 @@ public class AiServiceImpl implements AiService {
     private Resource ragPromptTemplate;
 
     private ChatClient chatClient;
-    private VectorStore vectorStore;
+    private RagVectorStoreService vectorStore;
 
 
     /**
@@ -57,7 +57,7 @@ public class AiServiceImpl implements AiService {
      * @param vectorStore to set
      */
     @Autowired
-    public void setStore(VectorStore vectorStore) {
+    public void setStore(RagVectorStoreService vectorStore) {
         this.vectorStore = vectorStore;
     }
 }

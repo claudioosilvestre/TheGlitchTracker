@@ -1,12 +1,9 @@
 package com.theglitchtracker.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "glitches")
@@ -21,6 +18,7 @@ public class Glitch {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     private LocalDateTime resolvedAt;
 
     @Enumerated(EnumType.STRING)
@@ -29,30 +27,11 @@ public class Glitch {
     @Enumerated(EnumType.STRING)
     private GlitchPriority glitchPriority;
 
-    @JsonManagedReference
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "users_list",
-            joinColumns = @JoinColumn(name = "glitch_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> userList = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-
-    public Glitch () {
-
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getResolvedAt() {
-        return resolvedAt;
-    }
-
-    public void setResolvedAt(LocalDateTime resolvedAt) {
-        this.resolvedAt = resolvedAt;
+    public Glitch() {
     }
 
     public int getId() {
@@ -79,6 +58,18 @@ public class Glitch {
         this.description = description;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getResolvedAt() {
+        return resolvedAt;
+    }
+
+    public void setResolvedAt(LocalDateTime resolvedAt) {
+        this.resolvedAt = resolvedAt;
+    }
+
     public GlitchStatus getGlitchStatus() {
         return glitchStatus;
     }
@@ -95,11 +86,11 @@ public class Glitch {
         this.glitchPriority = glitchPriority;
     }
 
-    public List<User> getUserList() {
-        return userList;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

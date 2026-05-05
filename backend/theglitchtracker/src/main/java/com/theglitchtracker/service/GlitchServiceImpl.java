@@ -7,8 +7,8 @@ import com.theglitchtracker.model.GlitchStatus;
 import com.theglitchtracker.repository.GlitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -70,7 +70,7 @@ public class GlitchServiceImpl implements GlitchService {
         updatedGlitch.setDescription(glitch.getDescription());
         updatedGlitch.setGlitchStatus(glitch.getGlitchStatus());
         updatedGlitch.setGlitchPriority(glitch.getGlitchPriority());
-        updatedGlitch.setUserList(glitch.getUserList());
+        updatedGlitch.setUser(glitch.getUser());
 
         return glitchRepository.save(updatedGlitch);
     }
@@ -88,13 +88,12 @@ public class GlitchServiceImpl implements GlitchService {
         Glitch glitch = glitchRepository.findById(glitchId)
                 .orElseThrow(() -> new TheGlitchTrackerException("Glitch does not exist"));
 
-
-        if(glitch.getGlitchStatus() != GlitchStatus.SYSTEM_FIXED && glitchStatus == GlitchStatus.SYSTEM_FIXED) {
+        if (glitch.getGlitchStatus() != GlitchStatus.SYSTEM_FIXED && glitchStatus == GlitchStatus.SYSTEM_FIXED) {
             glitch.setResolvedAt(LocalDateTime.now());
         }
 
-        if(glitch.getGlitchStatus() == GlitchStatus.SYSTEM_FIXED && (glitchStatus == GlitchStatus.IDENTIFIED ||
-                glitchStatus == GlitchStatus.BENDING_THE_RULES)) {
+        if (glitch.getGlitchStatus() == GlitchStatus.SYSTEM_FIXED &&
+                (glitchStatus == GlitchStatus.IDENTIFIED || glitchStatus == GlitchStatus.BENDING_THE_RULES)) {
             glitch.setResolvedAt(null);
         }
 
@@ -105,35 +104,38 @@ public class GlitchServiceImpl implements GlitchService {
 
     @Override
     public Glitch addUserToGlitch(int glitchId, int userId) {
-        if(glitchId <= 0) {
+        if (glitchId <= 0) {
             throw new IllegalArgumentException("Glitch Id must be positive");
         }
-        if(userId <= 0) {
+
+        if (userId <= 0) {
             throw new IllegalArgumentException("User Id must be positive");
         }
 
         Glitch glitch = glitchRepository.findById(glitchId)
                 .orElseThrow(() -> new TheGlitchTrackerException("Glitch does not exist"));
 
-        glitch.getUserList().add(userService.findById(userId));
+        glitch.setUser(userService.findById(userId));
 
         return glitchRepository.save(glitch);
-
     }
 
     @Override
     public Glitch removeUserFromGlitch(int glitchId, int userId) {
-        if(glitchId <= 0) {
+        if (glitchId <= 0) {
             throw new IllegalArgumentException("Glitch Id must be positive");
         }
-        if(userId <= 0) {
+
+        if (userId <= 0) {
             throw new IllegalArgumentException("User Id must be positive");
         }
 
         Glitch glitch = glitchRepository.findById(glitchId)
                 .orElseThrow(() -> new TheGlitchTrackerException("Glitch does not exist"));
 
-        glitch.getUserList().remove(userService.findById(userId));
+        if (glitch.getUser() != null && glitch.getUser().getId() == userId) {
+            glitch.setUser(null);
+        }
 
         return glitchRepository.save(glitch);
     }
@@ -156,14 +158,13 @@ public class GlitchServiceImpl implements GlitchService {
         return glitchRepository.save(glitch);
     }
 
-
     @Override
     public void deleteGlitch(int glitchId) {
         if (glitchId <= 0) {
             throw new IllegalArgumentException("Glitch id must be positive");
         }
 
-        if (!glitchRepository.findById(glitchId).isPresent()) {
+        if (glitchRepository.findById(glitchId).isEmpty()) {
             throw new TheGlitchTrackerException("Glitch does not exist");
         }
 
@@ -179,6 +180,4 @@ public class GlitchServiceImpl implements GlitchService {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-
-
 }
