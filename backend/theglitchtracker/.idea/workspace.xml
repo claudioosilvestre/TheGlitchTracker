@@ -59,6 +59,26 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RunManager">
+    <configuration name="TheGlitchTrackerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="TheGlitchTracker" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.theglitchtracker.TheGlitchTrackerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.theglitchtracker.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.TheGlitchTrackerApplication" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="" />
