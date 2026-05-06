@@ -16,4 +16,7 @@
                      max-age="3600" />
     </mvc:cors>
 
+
+    <mvc:resources mapping="/frontend/images/**" location="file:frontend/images/" />
+
 </beans>
