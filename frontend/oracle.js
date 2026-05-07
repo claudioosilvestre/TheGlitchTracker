@@ -11,7 +11,9 @@ let MOCK_GLITCHES = [
   { id: 5, title: "Zion broadcast signal restored", description: "Frequency interference resolved.", status: "System Fixed", priority: "Deja Vu", assignedTo: "Tank" },
   { id: 6, title: "Smith clone purged from subway grid", description: "Matrix integrity restored in affected zone.", status: "System Fixed", priority: "Agent Smith", assignedTo: "Trinity" },
 ];
-
+// Frontend usa a URL diretamente - <img src={produto.imagem_url} alt={produto.nome} />
+// PostgresSQL cria a Tabela dos Users com o PK = Id, NAME & Image_URL
+// Backend serve ficheiros estáticos | Endpoint que retorna dados + caminho da imagem
 const MOCK_USERS = [
   { id: 1, name: "Neo",      role: "The One",   avatar: "frontend/images/Neo.jpeg" },
   { id: 2, name: "Trinity",  role: "Operative", avatar: "frontend/images/Trinity.png" },
@@ -135,7 +137,7 @@ async function updateGlitchStatus(id, status) {
   }
 
   const res = await fetch(`${API_BASE}/glitches/${id}/status`, {
-    method: 'PATCH',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status }),
   });
@@ -405,6 +407,7 @@ async function renderOperatives() {
     return;
   }
 
+  // 421 - create another div with mission completed
   const cards = users.map(u => {
     const count = glitches.filter(g => g.assignedTo === u.name && g.status !== 'System Fixed').length;
 

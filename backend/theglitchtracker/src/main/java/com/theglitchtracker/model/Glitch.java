@@ -1,8 +1,12 @@
 package com.theglitchtracker.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "glitches")
 public class Glitch {
 
     @Id
@@ -12,6 +16,11 @@ public class Glitch {
     private String title;
     private String description;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    private LocalDateTime resolvedAt;
+
     @Enumerated(EnumType.STRING)
     private GlitchStatus glitchStatus;
 
@@ -19,11 +28,10 @@ public class Glitch {
     private GlitchPriority glitchPriority;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-
-    public Glitch () {
-
+    public Glitch() {
     }
 
     public int getId() {
@@ -48,6 +56,18 @@ public class Glitch {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getResolvedAt() {
+        return resolvedAt;
+    }
+
+    public void setResolvedAt(LocalDateTime resolvedAt) {
+        this.resolvedAt = resolvedAt;
     }
 
     public GlitchStatus getGlitchStatus() {

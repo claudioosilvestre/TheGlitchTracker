@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="openAiApi" class="com.theglitchtracker.factories.OpenAiApiFactory">
+        <property name="apiKey" value="${ai.api_key}"/>
+    </bean>
+
+    <bean id="openAiChatOptions" class="com.theglitchtracker.factories.OpenAiChatOptionsFactory">
+        <property name="model" value="${ai.chat.model}" />
+        <property name="temperature" value="${ai.temperature}" />
+    </bean>
+
+    <bean id="chatModel" class="com.theglitchtracker.factories.OpenAiChatModelFactory">
+        <property name="openAiApi" ref="openAiApi"/>
+        <property name="openAiChatOptions" ref="openAiChatOptions"/>
+    </bean>
+
+    <bean id="chatClient" class="org.springframework.ai.chat.client.ChatClient" factory-method="create">
+        <constructor-arg ref="chatModel"/>
+    </bean>
+
+    <!-- RAG -->
+    <bean id="openAiEmbeddingOptions" class="com.theglitchtracker.factories.OpenAiEmbeddingOptionsFactory">
+        <property name="model" value="${ai.embedding.model}" />
+    </bean>
+
+    <util:constant id="metaDataMode" static-field="org.springframework.ai.document.MetadataMode.EMBED"/>
+    <util:constant id="defaultRetryTemplate" static-field="org.springframework.ai.retry.RetryUtils.DEFAULT_RETRY_TEMPLATE"/>
+
+    <bean id="embeddingModel" class="org.springframework.ai.openai.OpenAiEmbeddingModel">
+        <constructor-arg ref="openAiApi" />
+        <constructor-arg ref="metaDataMode"/>
+        <constructor-arg ref="openAiEmbeddingOptions" />
+        <constructor-arg ref="defaultRetryTemplate" />
+    </bean>
+
+    <bean id="simpleVectorStore" class="com.theglitchtracker.factories.SimpleVectorStoreFactory">
+        <property name="embeddingModel" ref="embeddingModel"/>
+    </bean>
+</beans>

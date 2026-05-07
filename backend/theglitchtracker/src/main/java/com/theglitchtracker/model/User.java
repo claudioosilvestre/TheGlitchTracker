@@ -1,11 +1,14 @@
 package com.theglitchtracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -17,11 +20,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Glitch> glitchList = new ArrayList<>();
 
-    public User () {
-
+    public User() {
     }
 
     public int getId() {
@@ -46,5 +49,26 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public List<Glitch> getGlitchList() {
+        return glitchList;
+    }
+
+    public void setGlitchList(List<Glitch> glitchList) {
+        this.glitchList = glitchList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

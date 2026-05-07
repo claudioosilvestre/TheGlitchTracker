@@ -1,7 +1,0 @@
-# Database Configuration
-db.host=localhost
-db.name=
-db.username=
-db.password=
-schema.auto=create
-debug.sql=true

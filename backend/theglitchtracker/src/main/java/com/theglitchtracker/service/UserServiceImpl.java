@@ -23,10 +23,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        if(user == null) {
+        if (user == null) {
             throw new IllegalArgumentException("User can not be null");
         }
-        if(userRepository.findByName(user.getName()).isPresent()) {
+
+        if (user.getName() == null || user.getName().isBlank()) {
+            throw new IllegalArgumentException("User name can not be empty");
+        }
+
+        if (userRepository.findByName(user.getName()).isPresent()) {
             throw new UserAlreadyExistsException();
         }
 
