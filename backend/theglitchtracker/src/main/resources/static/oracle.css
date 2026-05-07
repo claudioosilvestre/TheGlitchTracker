@@ -1,0 +1,549 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+/* NOTA: variáveis globais de cor (verde terminal antigo) para facilitar manutenção */
+:root {
+  --green: #00ff41;
+  --green-dim: #00cc33;
+  --green-dark: #003b00;
+  --green-glow: rgba(0, 255, 65, 0.15);
+  --bg: #000000;
+  --bg-panel: #0a0a0a;
+  --bg-card: #0d1a0d;
+  --border: #1a4a1a;
+  --border-bright: #00ff41;
+  --text: #00ff41;
+  --text-dim: #005510;
+  --red: #ff2020;
+  --yellow: #ffcc00;
+  --orange: #ff8800;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', monospace;
+}
+
+/* NOTA: garantia que o layout ocupa  o ecra todo e sem margens */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── SCANLINES ── */
+/* NOTA: riscas horizontais semitransparentes sobre todo o site */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.18) 2px,
+    rgba(0,0,0,0.18) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── MATRIX RAIN CANVAS ── */
+.matrix-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── HEADER ── */
+/* NOTA: estilo do topo com brilho neon (box-shadow) e borda inferior brilhante */
+.header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-bright);
+  background: var(--bg);
+  box-shadow: 0 0 20px var(--green-glow);
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-shadow: 0 0 10px var(--green), 0 0 30px var(--green-dim);
+  text-transform: uppercase;
+}
+
+.oracle-tag {
+  font-size: 0.75rem;
+  color: var(--green-dim);
+  letter-spacing: 0.1em;
+}
+
+/* NOTA: animação do cursor (pisca pisca) do terminal */
+.blink {
+  animation: blink 1s step-end infinite;
+  color: var(--green);
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+/* NOTA: pontinho do status verde com animação tipo pulsação */
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
+  50% { opacity: 0.4; box-shadow: 0 0 2px var(--green); }
+}
+
+.clock { font-size: 0.8rem; color: var(--green-dim); }
+
+/* ── NAV ── */
+/* NOTA: Barra de navegação com aspeto de separadores que faz lembrar os sistema antigo */
+.nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 0;
+  padding: 0 2rem;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-link {
+  display: inline-block;
+  padding: 0.6rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--green-dim);
+  text-decoration: none;
+  letter-spacing: 0.12em;
+  border-right: 1px solid var(--border);
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--green);
+  background: var(--green-glow);
+  text-shadow: 0 0 8px var(--green);
+}
+
+/* ── MAIN ── */
+.main {
+  position: relative;
+  z-index: 10;
+  padding: 2rem;
+  min-height: calc(100vh - 130px);
+}
+
+/* ── PAGE TITLE ── */
+.page-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: var(--green-dim);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.page-title span { color: var(--green); }
+
+/* ── STATS BAR ── */
+/* NOTA: statistic no topo da Dashboard (ex: Total de Erros) */
+.stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: var(--green-dim);
+  letter-spacing: 0.08em;
+}
+
+.stat-chip strong { color: var(--green); font-size: 1rem; display: block; }
+
+/* ── KANBAN BOARD ── */
+/* NOTA: Layout em grelha de 3 colunas para o quadro Kanban (Identified, In Progress, Fixed) */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) { .kanban-board { grid-template-columns: 1fr; } }
+
+.kanban-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  position: relative;
+}
+
+/* NOTA: Barra de cor no topo de cada coluna do Kanban para identificar o estado */
+.kanban-col::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.col-identified::before  { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+.col-inprogress::before  { background: var(--orange);  box-shadow: 0 0 8px var(--orange); }
+.col-fixed::before       { background: var(--green);   box-shadow: 0 0 8px var(--green); }
+
+.col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.col-title {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.col-identified .col-title  { color: var(--yellow); }
+.col-inprogress .col-title  { color: var(--orange); }
+.col-fixed      .col-title  { color: var(--green); }
+
+.col-count {
+  font-size: 0.7rem;
+  color: var(--green-dim);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.5rem;
+}
+
+.col-cards { display: flex; flex-direction: column; gap: 0.6rem; min-height: 80px; }
+
+/* ── GLITCH CARD ── */
+/* NOTA: estilo dos cards individuais de erro com animação de entrada */
+.glitch-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  animation: cardIn 0.3s ease;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.glitch-card:hover {
+  border-color: var(--green-dim);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+.card-id {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.08em;
+}
+
+.card-title {
+  font-size: 0.82rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* NOTA: Badges de prioridade com cores específicas (Crítico, Alto, Médio, Baixo) */
+.priority-badge {
+  font-size: 0.6rem;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+.priority-critical { color: var(--red);    border-color: var(--red);    background: rgba(255,32,32,0.08); }
+.priority-high     { color: var(--orange); border-color: var(--orange); background: rgba(255,136,0,0.08); }
+.priority-medium   { color: var(--yellow); border-color: var(--yellow); background: rgba(255,204,0,0.08); }
+.priority-low      { color: var(--green-dim); border-color: var(--border); background: transparent; }
+
+.card-assignee {
+  font-size: 0.65rem;
+  color: var(--green-dim);
+}
+
+/* ── EMPTY STATE ── */
+.empty-col {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 1.5rem 0;
+  letter-spacing: 0.1em;
+}
+
+/* ── FORM PAGE ── */
+/* NOTA: formatação dos campos do formulário [coerência visual do terminal] */
+.form-container {
+  max-width: 600px;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--green-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+.form-textarea { resize: vertical; min-height: 90px; }
+
+.form-select option {
+  background-color: #0d1a0d;
+  color: #00ff41;
+}
+
+/* NOTA: botão de sumbit no report glitch com efeito ao passar o rato */
+.btn-submit {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-submit:hover {
+  background: var(--green-glow);
+  box-shadow: 0 0 15px var(--green-glow);
+}
+
+/* ── FEEDBACK MESSAGES ── */
+.msg {
+  font-size: 0.78rem;
+  padding: 0.6rem 1rem;
+  margin-top: 1rem;
+  border: 1px solid;
+  display: none;
+}
+
+.msg.success { color: var(--green);  border-color: var(--green);  background: rgba(0,255,65,0.05); }
+.msg.error   { color: var(--red);    border-color: var(--red);    background: rgba(255,32,32,0.05); }
+.msg.show    { display: block; animation: cardIn 0.3s ease; }
+
+/* ── OPERATIVES PAGE ── */
+/* NOTA: Responsive Grid para exibir os perfis dos Opeatives */
+.operatives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.operative-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 1rem;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+
+.operative-card:hover { border-color: var(--green-dim); }
+
+/* NOTA: Avatar circular com moldura neon */
+.operative-avatar {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #00ff41;
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.6);
+}
+
+.operative-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.operative-name {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--green);
+  margin-bottom: 0.25rem;
+}
+
+.operative-role {
+  font-size: 0.65rem;
+  color: var(--green-dim);
+}
+
+/* ── LOADING ── */
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 0.8rem;
+  color: var(--green-dim);
+  letter-spacing: 0.2em;
+  animation: blink 1s step-end infinite;
+}
+
+/* ── FOOTER ── */
+.footer {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 2rem;
+  font-size: 0.8rem;
+  color: #3fd264;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ── SCROLLBAR ── */
+/* NOTA: formatting da barra de scroll - tema escuro/verde */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); }
+::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
+
+/* ── CUSTOM DROPDOWN ── */
+/* NOTA: style para um seletor personalizado (dropdown) que substitui o padrão do browser - firefox*/
+.dd-wrapper {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.dd-selected {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.6rem 2rem 0.6rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  /* NOTA TBC: Ícone de seta via SVG embutido no background */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff41' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+}
+
+.dd-selected:hover,
+.dd-wrapper:focus-within .dd-selected {
+  border-color: var(--green);
+  box-shadow: 0 0 8px var(--green-glow);
+}
+
+.dd-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--green);
+  border-top: none;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 255, 65, 0.1);
+}
+
+.dd-list.open {
+  display: block;
+}
+
+.dd-option {
+  padding: 0.6rem 0.8rem;
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  background: var(--bg-card);
+}
+
+.dd-option:hover {
+  background: var(--green-dark);
+  color: var(--green);
+}
+
+/* NOTA: botão de mudança de estado nos cartões do Kanban - precisa de melhorias! */
+.btn-next-status {
+  margin-top: 0.8rem;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #00ff41;
+  background: transparent;
+  color: #00ff41;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.35);
+}
+
+.btn-next-status:hover {
+  background: rgba(0, 255, 65, 0.12);
+  box-shadow: 0 0 14px rgba(0, 255, 65, 0.7);
+}
