@@ -27,8 +27,11 @@ public class Glitch {
     @Enumerated(EnumType.STRING)
     private GlitchPriority glitchPriority;
 
-    @ManyToOne
+    // EAGER garante que o User é carregado automaticamente com o Glitch numa única query.
+    // Evitamos que o campo "user" venha null quando o frontend pede a lista de glitches (tavamos a ter bug aqui)
+    @ManyToOne(fetch = FetchType.EAGER) // -> adicionei o FetchType.EAGER
     @JoinColumn(name = "user_id")
+
     private User user;
 
     public Glitch() {

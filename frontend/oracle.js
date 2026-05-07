@@ -1,8 +1,7 @@
 
-// NOTA: Define a URL base para as chamadas de API. Atualmente aponta para o localhost.
 const API_BASE = 'http://localhost:8080/api';
 
-// NOTA: Dados fictícios (Mock) para simular falhas no sistema Matrix enquanto o servidor não está ligado.
+// NOTA: Dados Mock para simular falhas no sistema enquanto o servidor não está ligado.
 let MOCK_GLITCHES = [
   { id: 1, title: "Agent detected near the Oracle's kitchen", description: "System anomaly in sector 7G. Possible Smith replication.", status: "Identified", priority: "Agent Smith", assignedTo: "Neo" },
   { id: 2, title: "Déjà vu loop in Mega City East", description: "Cat seen twice. Matrix being altered.", status: "Identified", priority: "Deja Vu", assignedTo: "Trinity" },
@@ -11,6 +10,7 @@ let MOCK_GLITCHES = [
   { id: 5, title: "Zion broadcast signal restored", description: "Frequency interference resolved.", status: "System Fixed", priority: "Deja Vu", assignedTo: "Tank" },
   { id: 6, title: "Smith clone purged from subway grid", description: "Matrix integrity restored in affected zone.", status: "System Fixed", priority: "Agent Smith", assignedTo: "Trinity" },
 ];
+
 // Frontend usa a URL diretamente - <img src={produto.imagem_url} alt={produto.nome} />
 // PostgresSQL cria a Tabela dos Users com o PK = Id, NAME & Image_URL
 // Backend serve ficheiros estáticos | Endpoint que retorna dados + caminho da imagem
@@ -33,13 +33,98 @@ const priorityClass = {
 // STATUS FLOW
 // NOTA: Define a ordem lógica do quadro Kanban: Identified -> Bending the Rules -> System Fixed.
 const nextStatus = {
-  'Identified': 'Bending the Rules',
+  'Identified':        'Bending the Rules',
   'Bending the Rules': 'System Fixed',
-  'System Fixed': null,
+  'System Fixed':      null,
 };
 
+// =============================================================================
+// BACKEND MAPPING
+// NOTA: O backend usa enums em UPPER_SNAKE_CASE (ex: AGENT_SMITH, BENDING_THE_RULES).
+//       O frontend usa strings legíveis (ex: "Agent Smith", "Bending the Rules").
+//       Estes mapas fazem a conversão nos dois sentidos.
+// =============================================================================
+
+// Converte GlitchStatus do backend → frontend
+const statusMap = {
+  'IDENTIFIED':        'Identified',
+  'BENDING_THE_RULES': 'Bending the Rules',
+  'SYSTEM_FIXED':      'System Fixed',
+};
+
+// Converte status do frontend → enum do backend
+const statusReverseMap = {
+  'Identified':        'IDENTIFIED',
+  'Bending the Rules': 'BENDING_THE_RULES',
+  'System Fixed':      'SYSTEM_FIXED',
+};
+
+// Converte GlitchPriority do backend → frontend
+const priorityMap = {
+  'AGENT_SMITH': 'Agent Smith',
+  'HIGH_ALERT':  'High Alert',
+  'GLITCH':      'Glitch',
+  'DEJA_VU':     'Deja Vu',
+};
+
+// Converte priority do frontend → enum do backend
+const priorityReverseMap = {
+  'Agent Smith': 'AGENT_SMITH',
+  'High Alert':  'HIGH_ALERT',
+  'Glitch':      'GLITCH',
+  'Deja Vu':     'DEJA_VU',
+};
+
+// =============================================================================
+// MAPPERS
+// NOTA: Funções que transformam os objetos do backend no formato esperado pelo frontend.
+//       O backend devolve objetos aninhados (ex: glitch.user.name), o frontend
+//       trabalha com campos simples (ex: glitch.assignedTo).
+// =============================================================================
+
+// Converte um objeto Glitch do backend para o formato do frontend.
+// O campo "user" (objeto) é achatado para "assignedTo" (string com o nome).
+// Os enums glitchStatus e glitchPriority são convertidos para strings legíveis.
+function mapGlitch(g) {
+  return {
+    id:          g.id,
+    title:       g.title,
+    description: g.description,
+    status:      statusMap[g.glitchStatus]   || g.glitchStatus,
+    priority:    priorityMap[g.glitchPriority] || g.glitchPriority,
+    assignedTo:  g.user ? g.user.name : 'Unassigned',
+  };
+}
+
+// Converte um objeto User do backend para o formato do frontend.
+// O campo "userRole" (enum) é convertido para a sua descrição legível.
+// O campo "avatar" é construído com base no nome do user (convenção de ficheiro).
+// NOTA: Os ficheiros de imagem têm de existir em frontend/images/ com o nome exato do user.
+//       Extensões suportadas: .jpeg (Neo), .png (Trinity), .jpg (Morpheus, Tank).
+//       Se adicionares novos users, garante que o ficheiro de imagem existe.
+function mapUser(u) {
+  // Mapa de extensões por nome — ajusta se adicionares novos operativos
+  const avatarExtensions = {
+    'Neo':      'jpeg',
+    'Trinity':  'png',
+    'Morpheus': 'jpg',
+    'Tank':     'jpg',
+  };
+  const ext = avatarExtensions[u.name] || 'jpg';
+
+  return {
+    id:     u.id,
+    name:   u.name,
+    role:   u.userRole,
+    avatar: `frontend/images/${u.name}.${ext}`,
+  };
+}
+
+// =============================================================================
 // ROUTER (History API)
-// NOTA: Objeto que faz o mapping as rotas da URL para as funções de renderização de cada página.
+// NOTA: Objeto que faz o mapping das rotas da URL para as funções de renderização de cada página.
+// =============================================================================
+
 const routes = {
   '/dashboard':  renderDashboard,
   '/new-glitch': renderNewGlitch,
@@ -85,31 +170,43 @@ document.addEventListener('click', e => {
   }
 });
 
+// =============================================================================
 // API FUNCTIONS
-// Functions ready to connect to backend - while not ready we're using mock data.
+// NOTA: Quando USE_MOCK = true, todas as funções retornam dados locais (MOCK_*).
+//       Quando USE_MOCK = false, as funções comunicam com o backend via fetch.
+//       Para ativar o backend: muda USE_MOCK para false e garante que o servidor
+//       está a correr em localhost:8080.
+// =============================================================================
 
-const USE_MOCK = true; // to be changed to false when backend is ready
+const USE_MOCK = false; // Muda para true para usar dados mock sem backend
 
-// Fetches all glitches from backend (now it's from mock data).
-// REMOVE THE MOCK COMMENT when backend connection is done.
+// Fetches all glitches from backend.
+// Converte cada objeto Glitch do formato do backend para o formato do frontend via mapGlitch().
 // Returns a list of glitch objects.
 async function fetchGlitches() {
   if (USE_MOCK) return MOCK_GLITCHES;
   const res = await fetch(`${API_BASE}/glitches`);
   if (!res.ok) throw new Error('Failed to fetch glitches');
-  return res.json();
+  const data = await res.json();
+  return data.map(mapGlitch);
 }
 
-// Fetches all users from backend (now it's from mock data).
+// Fetches all users from backend.
+// Converte cada objeto User do formato do backend para o formato do frontend via mapUser().
 async function fetchUsers() {
   if (USE_MOCK) return MOCK_USERS;
   const res = await fetch(`${API_BASE}/users`);
   if (!res.ok) throw new Error('Failed to fetch users');
-  return res.json();
+  const data = await res.json();
+  return data.map(mapUser);
 }
 
-// Sends a new glitch to the backend (now it adds to mock).
-// Automatically assigns a unique ID and default status.
+// Sends a new glitch to the backend.
+// NOTA: O frontend envia priority e status como strings legíveis.
+//       Antes de enviar, convertemos para os enums do backend (UPPER_SNAKE_CASE).
+//       O assignedTo (nome do user) não é enviado aqui — a associação ao user
+//       é feita separadamente via PATCH /api/glitches/{id}/users se necessário.
+//       O glitchStatus inicial é sempre IDENTIFIED.
 async function postGlitch(glitchData) {
   if (USE_MOCK) {
     const newGlitch = { id: Date.now(), ...glitchData, status: 'Identified' };
@@ -120,15 +217,22 @@ async function postGlitch(glitchData) {
   const res = await fetch(`${API_BASE}/glitches`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(glitchData),
+    body: JSON.stringify({
+      title:          glitchData.title,
+      description:    glitchData.description,
+      glitchPriority: priorityReverseMap[glitchData.priority],
+      glitchStatus:   'IDENTIFIED',
+    }),
   });
 
   if (!res.ok) throw new Error('Failed to create glitch');
-  return res.json();
+  return mapGlitch(await res.json());
 }
 
-// Updates the status of a glitch (e.g., Identified -> System Fixed).
+// Updates the status of a glitch (e.g., Identified -> Bending the Rules -> System Fixed).
 // NOTA: Função usada para MOVER o glitch para a próxima coluna do Kanban.
+//       O backend espera o objeto com o campo "glitchStatus" em UPPER_SNAKE_CASE.
+//       O endpoint do backend é PUT (não PATCH) — /api/glitches/{id}/status.
 async function updateGlitchStatus(id, status) {
   if (USE_MOCK) {
     const g = MOCK_GLITCHES.find(g => g.id === id);
@@ -139,14 +243,16 @@ async function updateGlitchStatus(id, status) {
   const res = await fetch(`${API_BASE}/glitches/${id}/status`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ glitchStatus: statusReverseMap[status] }),
   });
 
   if (!res.ok) throw new Error('Failed to update status');
-  return res.json();
+  return mapGlitch(await res.json());
 }
 
+// =============================================================================
 // PAGES (DASHBOARD, NEW GLITCH FORM, OPERATIVES)
+// =============================================================================
 
 // DASHBOARD
 // Renders the main dashboard view.
@@ -249,13 +355,15 @@ async function renderNewGlitch() {
   } catch {}
 
   const priorityOptions = [
-    { value: '', label: '-- Choose priority --' },
+    { value: '',            label: '-- Choose priority --' },
     { value: 'Agent Smith', label: 'Agent Smith — Critical' },
     { value: 'High Alert',  label: 'High Alert' },
     { value: 'Glitch',      label: 'Glitch — Medium' },
     { value: 'Deja Vu',     label: 'Déjà Vu — Low' },
   ];
 
+  // NOTA: Os operativos do dropdown vêm do backend (via fetchUsers + mapUser).
+  //       Se o backend não estiver disponível, o dropdown fica apenas com a opção vazia.
   const assignOptions = [
     { value: '', label: '-- Choose operative --' },
     ...users.map(u => ({ value: u.name, label: u.name })),
@@ -341,7 +449,10 @@ async function renderNewGlitch() {
     document.querySelectorAll('.dd-list.open').forEach(l => l.classList.remove('open'));
   });
 
-  // NOTA: Lógica de submissão do formulário. Valida campos e envia para a "API" (postGlitch).
+  // NOTA: Lógica de submissão do formulário. Valida campos e envia para a API (postGlitch).
+  //       O assignedTo (nome do operativo) é enviado mas não é processado no POST do backend —
+  //       a associação user<->glitch é feita via PATCH /api/glitches/{id}/users com o userId.
+  //       Para ligar o operativo ao glitch após criação, seria necessário um segundo pedido.
   document.getElementById('btn-submit').addEventListener('click', async () => {
     const title      = document.getElementById('f-title').value.trim();
     const desc       = document.getElementById('f-desc').value.trim();
@@ -381,7 +492,8 @@ async function renderNewGlitch() {
   });
 }
 
-// Displays a temporary success or error message.- tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
+// Displays a temporary success or error message.
+// NOTA: tenho que rever porque quando da erro e depois da sucess parece que fica ali imenso tempo a marinar
 function showMsg(id, customText) {
   const el = document.getElementById(id);
   if (customText) el.textContent = `> ${customText}`;
@@ -394,6 +506,8 @@ function showMsg(id, customText) {
 // OPERATIVES
 // Renders the operatives page.
 // NOTA: Carrega a lista de operativos e conta quantos glitches ativos cada um tem atribuídos.
+//       O avatar é construído pelo mapUser() com base no nome do user.
+//       O role vem do enum UserRole do backend (ex: CAPTAIN, OPERATIVE...).
 async function renderOperatives() {
   const app = document.getElementById('app');
   app.innerHTML = `<div class="loading">&gt; LOADING OPERATIVE ROSTER...</div>`;
@@ -417,7 +531,7 @@ async function renderOperatives() {
           <img src="${u.avatar}" alt="${u.name}" />
         </div>
         <div class="operative-name">${u.name}</div>
-        <div classs="operative-role">${u.role}</div>
+        <div class="operative-role">${u.role}</div>
         <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
       </div>
     `;
@@ -431,6 +545,7 @@ async function renderOperatives() {
 
 // Handles clicks on the Kanban card status button.
 // NOTA: Listener global para capturar cliques no botão de mudar status e atualizar a view.
+//       Usa event delegation — o listener fica no document e filtra pelo botão correto.
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('.btn-next-status');
   if (!btn) return;
@@ -438,7 +553,7 @@ document.addEventListener('click', async (e) => {
   e.preventDefault();
   e.stopPropagation();
 
-  const id = Number(btn.dataset.id);
+  const id   = Number(btn.dataset.id);
   const next = btn.dataset.next;
 
   try {
@@ -449,8 +564,11 @@ document.addEventListener('click', async (e) => {
   }
 });
 
+// =============================================================================
 // MATRIX RAIN (Canvas)
-// NOTA: Cria a animação clássica de queda de caracteres verdes num elemento <canvas> - chars = '01アイウエカキクケサシスタチ'.
+// NOTA: Cria a animação clássica de queda de caracteres verdes num elemento <canvas>.
+//       chars = '01アイウエカキクケサシスタチ'
+// =============================================================================
 function initMatrixRain() {
   const container = document.getElementById('matrixRain');
   const canvas = document.createElement('canvas');
@@ -516,14 +634,15 @@ function initMatrixRain() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       resize();
-      cols = Math.floor(canvas.width / CHAR_SIZE);
+      cols  = Math.floor(canvas.width / CHAR_SIZE);
       drops = Array(cols).fill(1);
     }, 200);
   });
 }
 
 // CLOCK
-// NOTA: Inicializa o relógio digital no cabeçalho (vai ser util para quando implementar o created_at e o updated_at e o resolved_at).
+// NOTA: Inicializa o relógio digital no cabeçalho.
+//       Vai ser útil para quando implementar o created_at, updated_at e resolved_at.
 function initClock() {
   const el = document.getElementById('clock');
   function tick() {
@@ -534,8 +653,10 @@ function initClock() {
   setInterval(tick, 1000);
 }
 
+// =============================================================================
 // INIT
 // NOTA: Ponto de entrada do sistema. Ativa os efeitos visuais e carrega a página inicial.
+// =============================================================================
 initMatrixRain();
 initClock();
 
