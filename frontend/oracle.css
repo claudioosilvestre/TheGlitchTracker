@@ -547,3 +547,21 @@ html, body {
   background: rgba(0, 255, 65, 0.12);
   box-shadow: 0 0 14px rgba(0, 255, 65, 0.7);
 }
+
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.archive-card {
+  opacity: 0.85;
+  border-left: 3px solid #00ff41;
+}
+
+.archive-meta {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 6px;
+}
