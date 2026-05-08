@@ -1,7 +1,8 @@
 import {
     renderDashboard,
     renderNewGlitch,
-    renderOperatives
+    renderOperatives,
+    renderArchiveGlitches
 } from './pages.js';
 
 import {
@@ -15,6 +16,7 @@ const routes = {
     '/dashboard': renderDashboard,
     '/new-glitch': renderNewGlitch,
     '/operatives': renderOperatives,
+    '/archive-glitches': renderArchiveGlitches,
 };
 
 

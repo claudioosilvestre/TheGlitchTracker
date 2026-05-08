@@ -33,7 +33,7 @@ export async function renderDashboard() {
 
     try {
     glitches = await fetchGlitches();
-    console.log('GLITCHES FROM API:', glitches);
+    console.log('STATUS VALUES:', glitches.map(g => g.glitchStatus));
 } catch (err) {
     app.innerHTML = `
     <div class="msg error show">
@@ -46,19 +46,19 @@ export async function renderDashboard() {
 
 const cols = {
     'Identified':
-    glitches.filter(g => g.status === 'Identified'),
+    glitches.filter(g => g.status === 'IDENTIFIED'),
 
     'Bending the Rules':
-    glitches.filter(g => g.status === 'Bending the Rules'),
+    glitches.filter(g => g.status === 'BENDING_THE_RULES'),
 
     'System Fixed':
-    glitches.filter(g => g.status === 'System Fixed'),
+    glitches.filter(g => g.status === 'SYSTEM_FIXED'),
 };
 
 const total = glitches.length;
 
 const critical =
-    glitches.filter(g => g.priority === 'Agent Smith').length;
+    glitches.filter(g => g.priority === 'AGENT_SMITH').length;
 
     const fixed =
     cols['System Fixed'].length;
@@ -341,4 +341,89 @@ app.innerHTML = `
     ${cards}
     </div>
 `;
+}
+
+// ARCHIVE GLITCHES
+// Shows all resolved / fixed glitches (history view)
+export async function renderArchiveGlitches() {
+
+    const app = document.getElementById('app');
+
+    app.innerHTML = `
+    <div class="loading">
+    > ACCESSING ARCHIVE DATABASE...
+    </div>
+    `;
+
+    let glitches;
+
+    try {
+    glitches = await fetchGlitches();
+    console.log('GLITCHES RAW:', glitches);
+} catch (err) {
+    app.innerHTML = `
+    <div class="msg error show">
+        > ERROR: ${err.message}
+        </div>
+    `;
+    return;
+}
+
+  // Only fixed / resolved glitches
+    const archived = glitches.filter(g =>
+    g.status === 'SYSTEM_FIXED' || g.resolvedAt !== null
+);
+
+    app.innerHTML = `
+    <div class="page-title">
+      > GLITCH_ARCHIVE //
+    <span>HISTORICAL RECORDS</span>
+    </div>
+
+    <div class="stats-bar">
+    <div class="stat-chip">
+        <strong>${archived.length}</strong>
+        Archived Glitches
+        </div>
+    </div>
+
+    <div class="archive-list">
+
+    ${
+        archived.length === 0
+          ? `<div class="empty-col">// NO ARCHIVED GLITCHES //</div>`: archived.map(g => `
+                <div class="glitch-card archive-card">
+
+                <div class="card-id">
+                #GLT-${String(g.id).padStart(4, '0')}
+                </div>
+
+                <div class="card-title">
+                ${g.title}
+                </div>
+
+                <div class="card-footer">
+                <span class="priority-badge">
+                    ${g.priority}
+                    </span>
+
+                    <span class="card-assignee">
+                    ${g.assignedTo}
+                    </span>
+                </div>
+
+                <div class="archive-meta">
+                Resolved:
+                ${g.resolvedAt
+                    ? new Date(g.resolvedAt).toLocaleString()
+                    : 'Unknown'
+                }
+                </div>
+
+                </div>
+            `).join('')
+        }
+
+    </div>
+    `;
 }

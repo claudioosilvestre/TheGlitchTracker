@@ -24,15 +24,32 @@ const USE_MOCK = false;
 // (now it's from mock data - REMOVE THIS COMMENT LATER when Backend connection is done)
 // Returns a list of glitch objects.
 export async function fetchGlitches() {
-    if (USE_MOCK) return MOCK_GLITCHES;
 
-    const res = await fetch(`${API_BASE}/glitches`);
+    if (USE_MOCK) {
+    return MOCK_GLITCHES;
+}
 
-    if (!res.ok) {
+const res = await fetch(`${API_BASE}/glitches`);
+
+if (!res.ok) {
     throw new Error('Failed to fetch glitches');
 }
 
-return res.json();
+const data = await res.json();
+
+return data.map(g => ({
+    id: g.id,
+    title: g.title,
+    description: g.description,
+
+    status: g.glitchStatus,        // IDENTIFIED / BENDING_THE_RULES / SYSTEM_FIXED
+    priority: g.glitchPriority,    // GLITCH / HIGH_ALERT / AGENT_SMITH etc
+
+    assignedTo: g.user?.name || 'Unassigned',
+
+    createdAt: g.createdAt,
+    resolvedAt: g.resolvedAt
+}));
 }
 
 
