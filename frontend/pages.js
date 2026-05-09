@@ -8,10 +8,7 @@ import {
     renderColumn
 } from './components.js';
 
-import {
-    showMsg
-} from './utils.js';
-
+import { showMsg, priorityClass, userAvatars, roleLabels } from './utils.js';
 
 // PAGES
 // (DASHBOARD, NEW GLITCH FORM, OPERATIVES)
@@ -307,13 +304,13 @@ const cards = users.map(u => {
 
     const count = glitches.filter(g =>
         g.assignedTo === u.name &&
-        g.status !== 'System Fixed'
+        g.status !== 'SYSTEM_FIXED'
     ).length;
 
     return `
     <div class="operative-card">
         <div class="operative-avatar">
-        ${u.avatar || '👤'}
+        <img src="${userAvatars[u.name] || 'images/default.jpg'}" alt="${u.name}" />
         </div>
 
         <div class="operative-name">
@@ -321,7 +318,7 @@ const cards = users.map(u => {
         </div>
 
         <div class="operative-role">
-        ${u.role}
+        ${roleLabels[u.userRole] || u.userRole}
         </div>
 
         <div class="operative-count">
