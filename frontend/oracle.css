@@ -565,3 +565,21 @@ html, body {
   opacity: 0.6;
   margin-top: 6px;
 }
+
+.btn-delete {
+    background: transparent;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    margin-top: 8px;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.btn-delete:hover {
+    background: #ff0000;
+    color: #000;
+}

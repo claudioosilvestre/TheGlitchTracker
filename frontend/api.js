@@ -128,3 +128,29 @@ if (!res.ok) {
 
 return res.json();
 }
+
+export async function postUser(userData) {
+    const res = await fetch(`${API_BASE}/users`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to create user');
+    }
+
+    return res.json();
+}
+
+export async function deleteUser(id) {
+    const res = await fetch(`${API_BASE}/users/${id}`, {
+        method: 'DELETE',
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to delete user');
+    }
+}

@@ -1,17 +1,16 @@
 import {
     fetchGlitches,
     fetchUsers,
-    postGlitch
+    postGlitch,
+    postUser,
+    deleteUser
 } from './api.js';
 
 import {
     renderColumn
 } from './components.js';
 
-import {
-    showMsg
-} from './utils.js';
-
+import { showMsg, priorityClass, userAvatars, roleLabels } from './utils.js';
 
 // PAGES
 // (DASHBOARD, NEW GLITCH FORM, OPERATIVES)
@@ -133,7 +132,7 @@ export async function renderNewGlitch() {
 
 const userOptions = users
     .map(u =>
-        `<option value="${u.name}">${u.name}</option>`
+        `<option value="${u.id}">${u.name}</option>`
     )
     .join('');
 
@@ -176,19 +175,19 @@ const userOptions = users
         </label>
 
         <select class="form-select" id="f-priority">
-        <option value="Agent Smith">
+        <option value="AGENT_SMITH">
             Agent Smith — Critical
             </option>
 
-            <option value="High Alert">
+            <option value="HIGH_ALERT">
             High Alert
             </option>
 
-            <option value="Glitch">
+            <option value="GLITCH">
             Glitch — Medium
             </option>
 
-            <option value="Deja Vu">
+            <option value="DEJA_VU">
             Déjà Vu — Low
             </option>
         </select>
@@ -252,13 +251,16 @@ const userOptions = users
     }
 
     try {
+        
+        const userId = document.getElementById('f-assign').value;
+        
         await postGlitch({
             title,
             description: desc,
-            priority,
-            assignedTo
+            glitchPriority: priority,
+            user: userId ? { id: Number(userId) } : null
         });
-
+        
         showMsg('msg-ok');
 
         document.getElementById('f-title').value = '';
@@ -280,67 +282,105 @@ const userOptions = users
 export async function renderOperatives() {
     const app = document.getElementById('app');
 
-    app.innerHTML = `
-    <div class="loading">
-    > LOADING OPERATIVE ROSTER...
-    </div>
-    `;
+    app.innerHTML = `<div class="loading">> LOADING OPERATIVE ROSTER...</div>`;
 
-    let users;
-    let glitches;
+    let users, glitches;
 
     try {
-    [users, glitches] = await Promise.all([
-        fetchUsers(),
-        fetchGlitches()
-    ]);
-} catch (err) {
+        [users, glitches] = await Promise.all([fetchUsers(), fetchGlitches()]);
+    } catch (err) {
+        app.innerHTML = `<div class="msg error show">> ERROR: ${err.message}</div>`;
+        return;
+    }
+
+    const cards = users.map(u => {
+        const count = glitches.filter(g =>
+            g.assignedTo === u.name && g.status !== 'SYSTEM_FIXED'
+        ).length;
+
+        return `
+            <div class="operative-card">
+                <div class="operative-avatar">
+                    <img src="${userAvatars[u.name] || 'images/default.jpg'}" alt="${u.name}" />
+                </div>
+                <div class="operative-name">${u.name}</div>
+                <div class="operative-role">${roleLabels[u.userRole] || u.userRole}</div>
+                <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
+                <button class="btn-delete" data-user-id="${u.id}">✕ REMOVE</button>
+            </div>
+        `;
+    }).join('');
+
     app.innerHTML = `
-    <div class="msg error show">
-        > ERROR: ${err.message}
+        <div class="page-title">
+            > NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span>
         </div>
+
+        <button class="btn-submit" id="btn-add-operative">> ADD OPERATIVE</button>
+
+        <div id="form-add-operative" style="display:none;">
+            <div class="form-group">
+                <label class="form-label">Name *</label>
+                <input class="form-input" id="op-name" type="text" placeholder="Operative name..." />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Role *</label>
+                <select class="form-select" id="op-role">
+                    <option value="OPERATIVE">Operative</option>
+                    <option value="CAPTAIN">Captain</option>
+                    <option value="OPERATOR">Operator</option>
+                    <option value="PROGRAMMER">Programmer</option>
+                    <option value="ANALYST">Analyst</option>
+                    <option value="ENGINEER">Engineer</option>
+                    <option value="RECRUIT">Recruit</option>
+                </select>
+            </div>
+            <button class="btn-submit" id="btn-submit-operative">> INJECT OPERATIVE</button>
+            <div class="msg success" id="msg-op-ok">> OPERATIVE ADDED.</div>
+            <div class="msg error" id="msg-op-err">> FAILED TO ADD OPERATIVE.</div>
+        </div>
+
+        <div class="operatives-grid">${cards}</div>
     `;
-    return;
-}
 
-const cards = users.map(u => {
+    // Toggle formulário
+    document.getElementById('btn-add-operative').addEventListener('click', () => {
+        const form = document.getElementById('form-add-operative');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    });
 
-    const count = glitches.filter(g =>
-        g.assignedTo === u.name &&
-        g.status !== 'System Fixed'
-    ).length;
+    // Submeter novo operativo
+    document.getElementById('btn-submit-operative').addEventListener('click', async () => {
+        const name = document.getElementById('op-name').value.trim();
+        const userRole = document.getElementById('op-role').value;
 
-    return `
-    <div class="operative-card">
-        <div class="operative-avatar">
-        ${u.avatar || '👤'}
-        </div>
+        if (!name) {
+            showMsg('msg-op-err', 'ERROR: Name is required.');
+            return;
+        }
 
-        <div class="operative-name">
-        ${u.name}
-        </div>
+        try {
+            await postUser({ name, userRole });
+            showMsg('msg-op-ok');
+            document.getElementById('op-name').value = '';
+            renderOperatives();
+        } catch (err) {
+            showMsg('msg-op-err', `ERROR: ${err.message}`);
+        }
+    });
 
-        <div class="operative-role">
-        ${u.role}
-        </div>
-
-        <div class="operative-count">
-        ${count} active mission${count !== 1 ? 's' : ''}
-        </div>
-        </div>
-    `;
-}).join('');
-
-app.innerHTML = `
-    <div class="page-title">
-      > NEBUCHADNEZZAR_CREW //
-    <span>OPERATIVE STATUS</span>
-    </div>
-
-    <div class="operatives-grid">
-    ${cards}
-    </div>
-`;
+    // Apagar operativo
+    document.querySelectorAll('.btn-delete[data-user-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const userId = Number(btn.dataset.userId);
+            try {
+                await deleteUser(userId);
+                renderOperatives();
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
 }
 
 // ARCHIVE GLITCHES
@@ -349,81 +389,84 @@ export async function renderArchiveGlitches() {
 
     const app = document.getElementById('app');
 
-    app.innerHTML = `
-    <div class="loading">
-    > ACCESSING ARCHIVE DATABASE...
-    </div>
-    `;
+    app.innerHTML = `<div class="loading">> ACCESSING ARCHIVE DATABASE...</div>`;
 
     let glitches;
 
     try {
-    glitches = await fetchGlitches();
-    console.log('GLITCHES RAW:', glitches);
-} catch (err) {
-    app.innerHTML = `
-    <div class="msg error show">
-        > ERROR: ${err.message}
-        </div>
-    `;
-    return;
-}
-
-  // Only fixed / resolved glitches
-    const archived = glitches.filter(g =>
-    g.status === 'SYSTEM_FIXED' || g.resolvedAt !== null
-);
+        glitches = await fetchGlitches();
+    } catch (err) {
+        app.innerHTML = `<div class="msg error show">> ERROR: ${err.message}</div>`;
+        return;
+    }
 
     app.innerHTML = `
-    <div class="page-title">
-      > GLITCH_ARCHIVE //
-    <span>HISTORICAL RECORDS</span>
-    </div>
-
-    <div class="stats-bar">
-    <div class="stat-chip">
-        <strong>${archived.length}</strong>
-        Archived Glitches
+        <div class="page-title">
+            > GLITCH_ARCHIVE // <span>HISTORICAL RECORDS</span>
         </div>
-    </div>
 
-    <div class="archive-list">
+        <div class="stats-bar">
+            <div class="stat-chip">
+                <strong>${glitches.length}</strong>
+                Total Glitches
+            </div>
+        </div>
 
-    ${
-        archived.length === 0
-          ? `<div class="empty-col">// NO ARCHIVED GLITCHES //</div>`: archived.map(g => `
-                <div class="glitch-card archive-card">
+        <div class="filter-bar">
+            <select class="form-select" id="filter-status">
+                <option value="">All Statuses</option>
+                <option value="IDENTIFIED">Identified</option>
+                <option value="BENDING_THE_RULES">Bending the Rules</option>
+                <option value="SYSTEM_FIXED">System Fixed</option>
+            </select>
 
-                <div class="card-id">
-                #GLT-${String(g.id).padStart(4, '0')}
-                </div>
+            <select class="form-select" id="filter-priority">
+                <option value="">All Priorities</option>
+                <option value="AGENT_SMITH">Agent Smith</option>
+                <option value="HIGH_ALERT">High Alert</option>
+                <option value="GLITCH">Glitch</option>
+                <option value="DEJA_VU">Déjà Vu</option>
+            </select>
+        </div>
 
-                <div class="card-title">
-                ${g.title}
-                </div>
-
-                <div class="card-footer">
-                <span class="priority-badge">
-                    ${g.priority}
-                    </span>
-
-                    <span class="card-assignee">
-                    ${g.assignedTo}
-                    </span>
-                </div>
-
-                <div class="archive-meta">
-                Resolved:
-                ${g.resolvedAt
-                    ? new Date(g.resolvedAt).toLocaleString()
-                    : 'Unknown'
-                }
-                </div>
-
-                </div>
-            `).join('')
-        }
-
-    </div>
+        <div class="archive-list" id="archive-list"></div>
     `;
+
+    function renderList(filtered) {
+        document.getElementById('archive-list').innerHTML = filtered.length === 0
+            ? `<div class="empty-col">// NO GLITCHES FOUND //</div>`
+            : filtered.map(g => `
+                <div class="glitch-card archive-card" data-id="${g.id}">
+                    <div class="card-id">#GLT-${String(g.id).padStart(4, '0')}</div>
+                    <div class="card-title">${g.title}</div>
+                    <div class="card-footer">
+                        <span class="priority-badge">${g.priority}</span>
+                        <span class="card-assignee">${g.assignedTo}</span>
+                    </div>
+                    <div class="archive-meta">
+                        Created: ${g.createdAt ? new Date(g.createdAt).toLocaleString() : 'Unknown'}
+                        ${g.resolvedAt ? `| Resolved: ${new Date(g.resolvedAt).toLocaleString()}` : ''}
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    function applyFilters() {
+        const statusFilter = document.getElementById('filter-status').value;
+        const priorityFilter = document.getElementById('filter-priority').value;
+
+        const filtered = glitches.filter(g => {
+            const matchStatus = !statusFilter || g.status === statusFilter;
+            const matchPriority = !priorityFilter || g.priority === priorityFilter;
+            return matchStatus && matchPriority;
+        });
+
+        renderList(filtered);
+    }
+
+    document.getElementById('filter-status').addEventListener('change', applyFilters);
+    document.getElementById('filter-priority').addEventListener('change', applyFilters);
+
+    // renderiza todos por defeito
+    renderList(glitches);
 }

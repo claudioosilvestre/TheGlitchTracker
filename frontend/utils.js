@@ -1,3 +1,16 @@
+export const userAvatars = {
+    'Cláudio Silvestre': 'images/claudio.png',
+    'Maria Sousa':  'images/maria.png',
+    'Francisco Almeida': 'images/chico.png',
+};
+
+export const roleLabels = {
+    'CAPTAIN':    'Captain',
+    'OPERATIVE':  'Operative',
+    'OPERATOR':   'Operator',
+    'PROGRAMMER': 'Programmer',
+};
+
 // PRIORITY MAP
 export const priorityClass = {
     'Agent Smith': 'priority-critical',
