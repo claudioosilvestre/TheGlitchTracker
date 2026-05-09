@@ -1,7 +1,8 @@
 import {
     fetchGlitches,
     fetchUsers,
-    postGlitch
+    postGlitch,
+    postUser
 } from './api.js';
 
 import {
@@ -330,14 +331,65 @@ const cards = users.map(u => {
 
 app.innerHTML = `
     <div class="page-title">
-      > NEBUCHADNEZZAR_CREW //
-    <span>OPERATIVE STATUS</span>
+        > NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span>
     </div>
 
-    <div class="operatives-grid">
-    ${cards}
+    <button class="btn-submit" id="btn-add-operative">
+        > ADD OPERATIVE
+    </button>
+
+    <div id="form-add-operative" style="display:none;">
+        <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input class="form-input" id="op-name" type="text" placeholder="Operative name..." />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Role *</label>
+            <select class="form-select" id="op-role">
+                <option value="OPERATIVE">Operative</option>
+                <option value="CAPTAIN">Captain</option>
+                <option value="OPERATOR">Operator</option>
+                <option value="PROGRAMMER">Programmer</option>
+                <option value="ANALYST">Analyst</option>
+                <option value="ENGINEER">Engineer</option>
+                <option value="RECRUIT">Recruit</option>
+            </select>
+        </div>
+
+        <button class="btn-submit" id="btn-submit-operative">
+            > INJECT OPERATIVE
+        </button>
+
+        <div class="msg success" id="msg-op-ok">> OPERATIVE ADDED.</div>
+        <div class="msg error" id="msg-op-err">> FAILED TO ADD OPERATIVE.</div>
     </div>
+
+    <div class="operatives-grid">${cards}</div>
 `;
+
+document.getElementById('btn-add-operative').addEventListener('click', () => {
+    const form = document.getElementById('form-add-operative');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+});
+
+document.getElementById('btn-submit-operative').addEventListener('click', async () => {
+    const name = document.getElementById('op-name').value.trim();
+    const userRole = document.getElementById('op-role').value;
+
+    if (!name) {
+        showMsg('msg-op-err', 'ERROR: Name is required.');
+        return;
+    }
+
+    try {
+        await postUser({ name, userRole });
+        showMsg('msg-op-ok');
+        document.getElementById('op-name').value = '';
+        renderOperatives(); // re-renderiza para mostrar o novo operativo
+    } catch (err) {
+        showMsg('msg-op-err', `ERROR: ${err.message}`);
+    }
+});
 }
 
 // ARCHIVE GLITCHES
