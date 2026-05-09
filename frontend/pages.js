@@ -2,7 +2,8 @@ import {
     fetchGlitches,
     fetchUsers,
     postGlitch,
-    postUser
+    postUser,
+    deleteUser
 } from './api.js';
 
 import {
@@ -131,7 +132,7 @@ export async function renderNewGlitch() {
 
 const userOptions = users
     .map(u =>
-        `<option value="${u.name}">${u.name}</option>`
+        `<option value="${u.id}">${u.name}</option>`
     )
     .join('');
 
@@ -174,19 +175,19 @@ const userOptions = users
         </label>
 
         <select class="form-select" id="f-priority">
-        <option value="Agent Smith">
+        <option value="AGENT_SMITH">
             Agent Smith — Critical
             </option>
 
-            <option value="High Alert">
+            <option value="HIGH_ALERT">
             High Alert
             </option>
 
-            <option value="Glitch">
+            <option value="GLITCH">
             Glitch — Medium
             </option>
 
-            <option value="Deja Vu">
+            <option value="DEJA_VU">
             Déjà Vu — Low
             </option>
         </select>
@@ -250,13 +251,16 @@ const userOptions = users
     }
 
     try {
+        
+        const userId = document.getElementById('f-assign').value;
+        
         await postGlitch({
             title,
             description: desc,
-            priority,
-            assignedTo
+            glitchPriority: priority,
+            user: userId ? { id: Number(userId) } : null
         });
-
+        
         showMsg('msg-ok');
 
         document.getElementById('f-title').value = '';
@@ -278,118 +282,105 @@ const userOptions = users
 export async function renderOperatives() {
     const app = document.getElementById('app');
 
-    app.innerHTML = `
-    <div class="loading">
-    > LOADING OPERATIVE ROSTER...
-    </div>
-    `;
+    app.innerHTML = `<div class="loading">> LOADING OPERATIVE ROSTER...</div>`;
 
-    let users;
-    let glitches;
+    let users, glitches;
 
     try {
-    [users, glitches] = await Promise.all([
-        fetchUsers(),
-        fetchGlitches()
-    ]);
-} catch (err) {
-    app.innerHTML = `
-    <div class="msg error show">
-        > ERROR: ${err.message}
-        </div>
-    `;
-    return;
-}
-
-const cards = users.map(u => {
-
-    const count = glitches.filter(g =>
-        g.assignedTo === u.name &&
-        g.status !== 'SYSTEM_FIXED'
-    ).length;
-
-    return `
-    <div class="operative-card">
-        <div class="operative-avatar">
-        <img src="${userAvatars[u.name] || 'images/default.jpg'}" alt="${u.name}" />
-        </div>
-
-        <div class="operative-name">
-        ${u.name}
-        </div>
-
-        <div class="operative-role">
-        ${roleLabels[u.userRole] || u.userRole}
-        </div>
-
-        <div class="operative-count">
-        ${count} active mission${count !== 1 ? 's' : ''}
-        </div>
-        </div>
-    `;
-}).join('');
-
-app.innerHTML = `
-    <div class="page-title">
-        > NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span>
-    </div>
-
-    <button class="btn-submit" id="btn-add-operative">
-        > ADD OPERATIVE
-    </button>
-
-    <div id="form-add-operative" style="display:none;">
-        <div class="form-group">
-            <label class="form-label">Name *</label>
-            <input class="form-input" id="op-name" type="text" placeholder="Operative name..." />
-        </div>
-        <div class="form-group">
-            <label class="form-label">Role *</label>
-            <select class="form-select" id="op-role">
-                <option value="OPERATIVE">Operative</option>
-                <option value="CAPTAIN">Captain</option>
-                <option value="OPERATOR">Operator</option>
-                <option value="PROGRAMMER">Programmer</option>
-                <option value="ANALYST">Analyst</option>
-                <option value="ENGINEER">Engineer</option>
-                <option value="RECRUIT">Recruit</option>
-            </select>
-        </div>
-
-        <button class="btn-submit" id="btn-submit-operative">
-            > INJECT OPERATIVE
-        </button>
-
-        <div class="msg success" id="msg-op-ok">> OPERATIVE ADDED.</div>
-        <div class="msg error" id="msg-op-err">> FAILED TO ADD OPERATIVE.</div>
-    </div>
-
-    <div class="operatives-grid">${cards}</div>
-`;
-
-document.getElementById('btn-add-operative').addEventListener('click', () => {
-    const form = document.getElementById('form-add-operative');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-});
-
-document.getElementById('btn-submit-operative').addEventListener('click', async () => {
-    const name = document.getElementById('op-name').value.trim();
-    const userRole = document.getElementById('op-role').value;
-
-    if (!name) {
-        showMsg('msg-op-err', 'ERROR: Name is required.');
+        [users, glitches] = await Promise.all([fetchUsers(), fetchGlitches()]);
+    } catch (err) {
+        app.innerHTML = `<div class="msg error show">> ERROR: ${err.message}</div>`;
         return;
     }
 
-    try {
-        await postUser({ name, userRole });
-        showMsg('msg-op-ok');
-        document.getElementById('op-name').value = '';
-        renderOperatives(); // re-renderiza para mostrar o novo operativo
-    } catch (err) {
-        showMsg('msg-op-err', `ERROR: ${err.message}`);
-    }
-});
+    const cards = users.map(u => {
+        const count = glitches.filter(g =>
+            g.assignedTo === u.name && g.status !== 'SYSTEM_FIXED'
+        ).length;
+
+        return `
+            <div class="operative-card">
+                <div class="operative-avatar">
+                    <img src="${userAvatars[u.name] || 'images/default.jpg'}" alt="${u.name}" />
+                </div>
+                <div class="operative-name">${u.name}</div>
+                <div class="operative-role">${roleLabels[u.userRole] || u.userRole}</div>
+                <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
+                <button class="btn-delete" data-user-id="${u.id}">✕ REMOVE</button>
+            </div>
+        `;
+    }).join('');
+
+    app.innerHTML = `
+        <div class="page-title">
+            > NEBUCHADNEZZAR_CREW // <span>OPERATIVE STATUS</span>
+        </div>
+
+        <button class="btn-submit" id="btn-add-operative">> ADD OPERATIVE</button>
+
+        <div id="form-add-operative" style="display:none;">
+            <div class="form-group">
+                <label class="form-label">Name *</label>
+                <input class="form-input" id="op-name" type="text" placeholder="Operative name..." />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Role *</label>
+                <select class="form-select" id="op-role">
+                    <option value="OPERATIVE">Operative</option>
+                    <option value="CAPTAIN">Captain</option>
+                    <option value="OPERATOR">Operator</option>
+                    <option value="PROGRAMMER">Programmer</option>
+                    <option value="ANALYST">Analyst</option>
+                    <option value="ENGINEER">Engineer</option>
+                    <option value="RECRUIT">Recruit</option>
+                </select>
+            </div>
+            <button class="btn-submit" id="btn-submit-operative">> INJECT OPERATIVE</button>
+            <div class="msg success" id="msg-op-ok">> OPERATIVE ADDED.</div>
+            <div class="msg error" id="msg-op-err">> FAILED TO ADD OPERATIVE.</div>
+        </div>
+
+        <div class="operatives-grid">${cards}</div>
+    `;
+
+    // Toggle formulário
+    document.getElementById('btn-add-operative').addEventListener('click', () => {
+        const form = document.getElementById('form-add-operative');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Submeter novo operativo
+    document.getElementById('btn-submit-operative').addEventListener('click', async () => {
+        const name = document.getElementById('op-name').value.trim();
+        const userRole = document.getElementById('op-role').value;
+
+        if (!name) {
+            showMsg('msg-op-err', 'ERROR: Name is required.');
+            return;
+        }
+
+        try {
+            await postUser({ name, userRole });
+            showMsg('msg-op-ok');
+            document.getElementById('op-name').value = '';
+            renderOperatives();
+        } catch (err) {
+            showMsg('msg-op-err', `ERROR: ${err.message}`);
+        }
+    });
+
+    // Apagar operativo
+    document.querySelectorAll('.btn-delete[data-user-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const userId = Number(btn.dataset.userId);
+            try {
+                await deleteUser(userId);
+                renderOperatives();
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
 }
 
 // ARCHIVE GLITCHES

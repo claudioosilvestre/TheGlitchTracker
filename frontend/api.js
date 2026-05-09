@@ -144,3 +144,13 @@ export async function postUser(userData) {
 
     return res.json();
 }
+
+export async function deleteUser(id) {
+    const res = await fetch(`${API_BASE}/users/${id}`, {
+        method: 'DELETE',
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to delete user');
+    }
+}
