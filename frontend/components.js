@@ -7,23 +7,23 @@ export function renderCard(g) {
     const pClass = priorityClass[g.priority] || 'priority-low';
 
     return `
-    <div class="glitch-card">
-    <div class="card-id">
-        #GLT-${String(g.id).padStart(4, '0')}
+    <div class="glitch-card" data-glitch-id="${g.id}">
+        <div class="card-id">
+            #GLT-${String(g.id).padStart(4, '0')}
         </div>
 
         <div class="card-title">
-        ${g.title}
+            ${g.title}
         </div>
 
         <div class="card-footer">
-        <span class="priority-badge ${pClass}">
-        ${g.priority}
-        </span>
+            <span class="priority-badge ${pClass}">
+                ${g.priority}
+            </span>
 
-        <span class="card-assignee">
-        @${g.assignedTo || 'Unassigned'}
-        </span>
+            <span class="card-assignee">
+                @${g.assignedTo || 'Unassigned'}
+            </span>
         </div>
     </div>
     `;

@@ -171,6 +171,16 @@ public class GlitchServiceImpl implements GlitchService {
         glitchRepository.deleteById(glitchId);
     }
 
+    @Override
+    public Glitch resolveGlitch(int glitchId) {
+
+        Glitch glitch = getGlitchById(glitchId);
+
+        glitch.setResolvedAt(LocalDateTime.now());
+
+        return glitchRepository.save(glitch);
+    }
+
     @Autowired
     public void setGlitchRepository(GlitchRepository glitchRepository) {
         this.glitchRepository = glitchRepository;

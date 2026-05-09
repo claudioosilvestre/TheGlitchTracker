@@ -5,7 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/WebConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/GlitchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/GlitchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/Glitch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/Glitch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/components.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/components.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/oracle.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/oracle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/pages.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/pages.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/utils.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +41,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "fdinisdealmeida"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:Maria-Sousa-GH/Oracle.git",
+    "accountId": "e730ae1e-3daa-40e9-b543-99c596ada907"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -39,31 +68,37 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;Spring Boot.TheGlitchTrackerApplication.executor&quot;: &quot;Run&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;claudio&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/claudiosilvestre/Silvestre/Code_For_All/FinalProject/Oracle/backend/theglitchtracker&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.TheGlitchTrackerApplication.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Francisco de Almeida/Documents/ORACLE/Oracle/backend/theglitchtracker",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Francisco de Almeida\Documents\ORACLE\Oracle\backend\theglitchtracker\uploads" />
+      <recent name="C:\Users\Francisco de Almeida\Documents\ORACLE\Oracle\backend\theglitchtracker\src\main\java\com\theglitchtracker" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="TheGlitchTrackerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="TheGlitchTracker" />
@@ -84,6 +119,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="" />
@@ -97,6 +140,7 @@
       <workItem from="1777914768907" duration="1392000" />
       <workItem from="1778086176694" duration="929000" />
       <workItem from="1778167328758" duration="937000" />
+      <workItem from="1778324917339" duration="10951000" />
     </task>
     <servers />
   </component>

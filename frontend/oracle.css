@@ -20,8 +20,12 @@
   --font-display: 'Orbitron', monospace;
 }
 
-/* NOTA: garantia que o layout ocupa  o ecra todo e sem margens */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* NOTA: garantia que o layout ocupa o ecrã todo e sem margens */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html, body {
   height: 100%;
@@ -92,13 +96,20 @@ html, body {
   color: var(--green);
 }
 
-@keyframes blink { 50% { opacity: 0; } }
+@keyframes blink {
+  50% { opacity: 0; }
+}
 
-.header-right { display: flex; align-items: center; gap: 0.75rem; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
 /* NOTA: pontinho do status verde com animação tipo pulsação */
 .status-dot {
-  width: 8px; height: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--green);
   box-shadow: 0 0 8px var(--green);
@@ -106,19 +117,28 @@ html, body {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--green); }
-  50% { opacity: 0.4; box-shadow: 0 0 2px var(--green); }
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  50% {
+    opacity: 0.4;
+    box-shadow: 0 0 2px var(--green);
+  }
 }
 
-.clock { font-size: 0.8rem; color: var(--green-dim); }
+.clock {
+  font-size: 0.8rem;
+  color: var(--green-dim);
+}
 
 /* ── NAV ── */
-/* NOTA: Barra de navegação com aspeto de separadores que faz lembrar os sistema antigo */
+/* NOTA: Barra de navegação com aspeto de separadores que faz lembrar sistemas antigos */
 .nav {
   position: relative;
   z-index: 10;
   display: flex;
-  gap: 0;
   padding: 0 2rem;
   background: var(--bg-panel);
   border-bottom: 1px solid var(--border);
@@ -136,7 +156,8 @@ html, body {
   transition: color 0.2s, background 0.2s;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--green);
   background: var(--green-glow);
   text-shadow: 0 0 8px var(--green);
@@ -160,10 +181,12 @@ html, body {
   text-transform: uppercase;
 }
 
-.page-title span { color: var(--green); }
+.page-title span {
+  color: var(--green);
+}
 
 /* ── STATS BAR ── */
-/* NOTA: statistic no topo da Dashboard (ex: Total de Erros) */
+/* NOTA: estatísticas no topo da Dashboard */
 .stats-bar {
   display: flex;
   gap: 1.5rem;
@@ -180,17 +203,44 @@ html, body {
   letter-spacing: 0.08em;
 }
 
-.stat-chip strong { color: var(--green); font-size: 1rem; display: block; }
+.stat-chip strong {
+  color: var(--green);
+  font-size: 1rem;
+  display: block;
+  text-align:center;
+}
+
+.stat-chip-agent-smith {
+  background: var(--bg-card);
+  border: 1px solid #ff2020;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  color: #ff2020;
+  letter-spacing: 0.08em;
+}
+
+.stat-chip-agent-smith strong {
+  color: #ff2020;
+  font-size: 1rem;
+  display: block;
+  
+  text-align:center;
+}
+
 
 /* ── KANBAN BOARD ── */
-/* NOTA: Layout em grelha de 3 colunas para o quadro Kanban (Identified, In Progress, Fixed) */
+/* NOTA: Layout em grelha de 3 colunas para o quadro Kanban */
 .kanban-board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
-@media (max-width: 900px) { .kanban-board { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+  .kanban-board {
+    grid-template-columns: 1fr;
+  }
+}
 
 .kanban-col {
   background: var(--bg-card);
@@ -199,17 +249,30 @@ html, body {
   position: relative;
 }
 
-/* NOTA: Barra de cor no topo de cada coluna do Kanban para identificar o estado */
+/* NOTA: Barra de cor no topo de cada coluna do Kanban */
 .kanban-col::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 2px;
 }
 
-.col-identified::before  { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
-.col-inprogress::before  { background: var(--orange);  box-shadow: 0 0 8px var(--orange); }
-.col-fixed::before       { background: var(--green);   box-shadow: 0 0 8px var(--green); }
+.col-identified::before {
+  background: var(--yellow);
+  box-shadow: 0 0 8px var(--yellow);
+}
+
+.col-inprogress::before {
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+}
+
+.col-fixed::before {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
 
 .col-header {
   display: flex;
@@ -227,9 +290,17 @@ html, body {
   text-transform: uppercase;
 }
 
-.col-identified .col-title  { color: var(--yellow); }
-.col-inprogress .col-title  { color: var(--orange); }
-.col-fixed      .col-title  { color: var(--green); }
+.col-identified .col-title {
+  color: var(--yellow);
+}
+
+.col-inprogress .col-title {
+  color: var(--orange);
+}
+
+.col-fixed .col-title {
+  color: var(--green);
+}
 
 .col-count {
   font-size: 0.7rem;
@@ -239,26 +310,40 @@ html, body {
   padding: 0.1rem 0.5rem;
 }
 
-.col-cards { display: flex; flex-direction: column; gap: 0.6rem; min-height: 80px; }
+.col-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 80px;
+}
 
 /* ── GLITCH CARD ── */
-/* NOTA: estilo dos cards individuais de erro com animação de entrada */
+/* NOTA: estilo dos cards individuais de erro */
 .glitch-card {
   background: var(--bg);
   border: 1px solid var(--border);
   padding: 0.75rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   animation: cardIn 0.3s ease;
+  cursor: pointer;
 }
 
 @keyframes cardIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .glitch-card:hover {
   border-color: var(--green-dim);
-  box-shadow: 0 0 10px var(--green-glow);
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.25);
+  transform: translateY(-2px);
 }
 
 .card-id {
@@ -283,7 +368,7 @@ html, body {
   gap: 0.3rem;
 }
 
-/* NOTA: Badges de prioridade com cores específicas (Crítico, Alto, Médio, Baixo) */
+/* NOTA: Badges de prioridade */
 .priority-badge {
   font-size: 0.6rem;
   padding: 0.15rem 0.5rem;
@@ -292,13 +377,79 @@ html, body {
   border: 1px solid;
 }
 
-.priority-critical { color: var(--red);    border-color: var(--red);    background: rgba(255,32,32,0.08); }
-.priority-high     { color: var(--orange); border-color: var(--orange); background: rgba(255,136,0,0.08); }
-.priority-medium   { color: var(--yellow); border-color: var(--yellow); background: rgba(255,204,0,0.08); }
-.priority-low      { color: var(--green-dim); border-color: var(--border); background: transparent; }
+.priority-critical {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255,32,32,0.08);
+}
+
+.priority-high {
+  color: var(--orange);
+  border-color: var(--orange);
+  background: rgba(255,136,0,0.08);
+}
+
+.priority-medium {
+  color: var(--yellow);
+  border-color: var(--yellow);
+  background: rgba(255,204,0,0.08);
+}
+
+.priority-low {
+  color: var(--green-dim);
+  border-color: var(--border);
+  background: transparent;
+}
+
+/* NOTA: Card de prioridade no details page */
+
+.detail-box.priority-critical {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255,32,32,0.08);
+}
+
+.detail-box.priority-critical strong,
+.detail-box.priority-critical span {
+  color: var(--red);
+}
+
+.detail-box.priority-high {
+  color: var(--orange);
+  border-color: var(--orange);
+  background: rgba(255,136,0,0.08);
+}
+
+.detail-box.priority-high strong,
+.detail-box.priority-high span {
+  color: var(--orange);
+}
+
+.detail-box.priority-medium {
+  color: var(--yellow);
+  border-color: var(--yellow);
+  background: rgba(255,204,0,0.08);
+}
+
+.detail-box.priority-medium strong,
+.detail-box.priority-medium span {
+  color: var(--yellow);
+}
+
+.detail-box.priority-low {
+  color: var(--green-dim);
+  border-color: var(--border);
+  background: transparent;
+}
+
+.detail-box.priority-low strong,
+.detail-box.priority-low span {
+  color: var(--green-dim);
+}
+
 
 .card-assignee {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: var(--green-dim);
 }
 
@@ -312,11 +463,7 @@ html, body {
 }
 
 /* ── FORM PAGE ── */
-/* NOTA: formatação dos campos do formulário [coerência visual do terminal] */
-.form-container {
-  max-width: 600px;
-}
-
+/* NOTA: formatação dos campos do formulário */
 .form-group {
   margin-bottom: 1.2rem;
 }
@@ -327,10 +474,12 @@ html, body {
   color: var(--green-dim);
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.25rem;
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -341,21 +490,27 @@ html, body {
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   appearance: none;
+  margin-bottom:0.75rem;
 }
 
-.form-input:focus, .form-select:focus, .form-textarea:focus {
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
   border-color: var(--green);
   box-shadow: 0 0 8px var(--green-glow);
 }
 
-.form-textarea { resize: vertical; min-height: 90px; }
+.form-textarea {
+  resize: vertical;
+  min-height: 90px;
+}
 
 .form-select option {
   background-color: #0d1a0d;
   color: #00ff41;
 }
 
-/* NOTA: botão de sumbit no report glitch com efeito ao passar o rato */
+/* NOTA: botão de submit */
 .btn-submit {
   background: transparent;
   border: 1px solid var(--green);
@@ -367,6 +522,7 @@ html, body {
   cursor: pointer;
   text-transform: uppercase;
   transition: background 0.2s, box-shadow 0.2s;
+  margin-bottom: 1.25rem;
 }
 
 .btn-submit:hover {
@@ -383,12 +539,28 @@ html, body {
   display: none;
 }
 
-.msg.success { color: var(--green);  border-color: var(--green);  background: rgba(0,255,65,0.05); }
-.msg.error   { color: var(--red);    border-color: var(--red);    background: rgba(255,32,32,0.05); }
-.msg.show    { display: block; animation: cardIn 0.3s ease; }
+.msg.success {
+  color: var(--green);
+  border-color: var(--green);
+  background: rgba(0,255,65,0.05);
+}
+
+.msg.error {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255, 32, 32, 0.05);
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+
+}
+
+.msg.show {
+  display: block;
+  animation: cardIn 0.3s ease;
+}
 
 /* ── OPERATIVES PAGE ── */
-/* NOTA: Responsive Grid para exibir os perfis dos Opeatives */
+/* NOTA: Responsive Grid para exibir os perfis dos Operatives */
 .operatives-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -398,12 +570,58 @@ html, body {
 .operative-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  padding: 1rem;
+  padding: 0.75rem;
   text-align: center;
   transition: border-color 0.2s;
 }
 
-.operative-card:hover { border-color: var(--green-dim); }
+.operative-card:hover {
+  border-color: var(--green-dim);
+}
+
+
+/* Container for the operative profile URL */
+.operative-url {
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.github-icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+    filter:
+    brightness(0)
+    saturate(100%)
+    invert(73%)
+    sepia(97%)
+    saturate(749%)
+    hue-rotate(75deg)
+    brightness(104%)
+    contrast(104%);
+}
+
+.operative-url:hover .github-icon {
+  opacity: 1;
+
+}
+
+/* Clickable operative profile link */
+.profile-link {
+  color: var(--green-dim);
+  text-decoration: none;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect for operative profile link */
+.profile-link:hover {
+  color: var(--green);
+  text-shadow: 0 0 8px var(--green);
+}
+
 
 /* NOTA: Avatar circular com moldura neon */
 .operative-avatar {
@@ -436,6 +654,11 @@ html, body {
   color: var(--green-dim);
 }
 
+.operative-count{
+  margin: 1rem;
+  font-size: 0.85rem;
+}
+
 /* ── LOADING ── */
 .loading {
   text-align: center;
@@ -462,93 +685,24 @@ html, body {
 }
 
 /* ── SCROLLBAR ── */
-/* NOTA: formatting da barra de scroll - tema escuro/verde */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); }
-::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
-
-/* ── CUSTOM DROPDOWN ── */
-/* NOTA: style para um seletor personalizado (dropdown) que substitui o padrão do browser - firefox*/
-.dd-wrapper {
-  position: relative;
-  width: 100%;
-  user-select: none;
+/* NOTA: formatting da barra de scroll */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.dd-selected {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  padding: 0.6rem 2rem 0.6rem 0.8rem;
-  cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  /* NOTA TBC: Ícone de seta via SVG embutido no background */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff41' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.8rem center;
+::-webkit-scrollbar-track {
+  background: var(--bg);
 }
 
-.dd-selected:hover,
-.dd-wrapper:focus-within .dd-selected {
-  border-color: var(--green);
-  box-shadow: 0 0 8px var(--green-glow);
+::-webkit-scrollbar-thumb {
+  background: var(--border);
 }
 
-.dd-list {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--green);
-  border-top: none;
-  z-index: 100;
-  box-shadow: 0 4px 16px rgba(0, 255, 65, 0.1);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-dim);
 }
 
-.dd-list.open {
-  display: block;
-}
-
-.dd-option {
-  padding: 0.6rem 0.8rem;
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.15s;
-  background: var(--bg-card);
-}
-
-.dd-option:hover {
-  background: var(--green-dark);
-  color: var(--green);
-}
-
-/* NOTA: botão de mudança de estado nos cartões do Kanban - precisa de melhorias! */
-.btn-next-status {
-  margin-top: 0.8rem;
-  width: 100%;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #00ff41;
-  background: transparent;
-  color: #00ff41;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(0, 255, 65, 0.35);
-}
-
-.btn-next-status:hover {
-  background: rgba(0, 255, 65, 0.12);
-  box-shadow: 0 0 14px rgba(0, 255, 65, 0.7);
-}
-
-
+/* ── ARCHIVE PAGE ── */
 .archive-list {
   display: flex;
   flex-direction: column;
@@ -566,20 +720,107 @@ html, body {
   margin-top: 6px;
 }
 
+/* ── DELETE BUTTON ── */
 .btn-delete {
-    background: transparent;
-    border: 1px solid #ff0000;
-    color: #ff0000;
-    font-family: 'Share Tech Mono', monospace;
-    padding: 4px 12px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    margin-top: 8px;
-    letter-spacing: 1px;
-    transition: all 0.2s;
+  background: transparent;
+  border: 1px solid #ff0000;
+  color: #ff0000;
+  font-family: 'Share Tech Mono', monospace;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  margin-top: 8px;
+  letter-spacing: 1px;
+  transition: all 0.2s;
 }
 
 .btn-delete:hover {
-    background: #ff0000;
-    color: #000;
+  background: #ff0000;
+  color: #000;
+}
+
+/* ── GLITCH DETAILS PAGE ── */
+/* NOTA: card principal usado na página de detalhes */
+.glitch-details-card,
+.form-card {
+  max-width: 900px;
+  margin: 24px auto 0;
+  padding: 28px;
+  cursor: default;
+}
+
+.glitch-details-card:hover,
+.form-card:hover {
+  transform: none;
+}
+
+.glitch-details-title {
+  margin-top: 12px;
+  font-size: 28px;
+}
+
+.glitch-details-footer {
+  margin-top: 18px;
+  margin-bottom: 24px;
+}
+
+.glitch-details-section {
+  border-top: 1px solid rgba(0, 255, 65, 0.3);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  padding: 20px 0;
+  margin-bottom: 24px;
+}
+
+.glitch-details-section h3 {
+  margin-bottom: 12px;
+  color: #00ff41;
+}
+
+.glitch-details-section p {
+  line-height: 1.6;
+}
+
+.glitch-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.detail-box {
+  border: 1px solid rgba(0, 255, 65, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 16px;
+}
+
+.detail-box span {
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.detail-box strong {
+  color: #00ff41;
+}
+
+/* ── FORM CARD ── */
+.form-card {
+  max-width: 700px;
+}
+
+.form-card .btn-submit {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.form-card .msg {
+  margin-top: 16px;
+}
+
+/* ── MOBILE ── */
+@media (max-width: 700px) {
+  .glitch-details-grid {
+    grid-template-columns: 1fr;
+  }
 }

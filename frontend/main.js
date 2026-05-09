@@ -2,6 +2,7 @@ import {
     renderDashboard,
     renderNewGlitch,
     renderOperatives,
+    renderGlitchDetails,
     renderArchiveGlitches
 } from './pages.js';
 
@@ -31,10 +32,20 @@ function navigate(path) {
 }
 
 // Loads and renders the page based on the current path.
-// If the route does not exist, it defaults to the dashboard.
+// Supports both fixed routes and dynamic glitch detail routes.
 function loadPage(path) {
+    const glitchDetailsMatch = path.match(/^\/glitches\/(\d+)$/);
+
+    if (glitchDetailsMatch) {
+        const id = Number(glitchDetailsMatch[1]);
+
+        renderGlitchDetails(id);
+
+        return;
+    }
+
     const render =
-    routes[path] || renderDashboard;
+        routes[path] || renderDashboard;
 
     render();
 }
@@ -68,15 +79,27 @@ window.addEventListener('popstate', () => {
 
 // Intercepts clicks on navigation links.
 // Prevents full page reload and uses SPA navigation instead.
+// Accepts clicks on Glitch Cards to show the Glitch details page
 document.addEventListener('click', e => {
 
     const link = e.target.closest('.nav-link');
+    const card = e.target.closest('[data-glitch-id]');
 
     if (link) {
     e.preventDefault();
 
     navigate(link.getAttribute('href'));
-}
+    return;
+
+    }
+
+  
+
+    if (card) {
+        const id = card.dataset.glitchId;
+
+        navigate(`/glitches/${id}`);
+    }
 });
 
 

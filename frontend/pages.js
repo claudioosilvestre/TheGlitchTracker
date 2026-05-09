@@ -1,16 +1,28 @@
 import {
     fetchGlitches,
+    fetchGlitchById,
     fetchUsers,
     postGlitch,
     postUser,
-    deleteUser
+    deleteUser,
+    resolveGlitch,
+    uploadAvatar
 } from './api.js';
+
+
 
 import {
     renderColumn
 } from './components.js';
 
-import { showMsg, priorityClass, userAvatars, roleLabels } from './utils.js';
+import {
+    showMsg,
+    priorityClass,
+    userAvatars,
+    roleLabels,
+    statusLabels,
+    priorityLabels
+} from './utils.js';
 
 // PAGES
 // (DASHBOARD, NEW GLITCH FORM, OPERATIVES)
@@ -89,7 +101,7 @@ const critical =
         System Fixed
         </div>
 
-        <div class="stat-chip">
+        <div class="stat-chip-agent-smith">
         <strong>${critical}</strong>
         ⚠ Agent Smith Level
         </div>
@@ -137,12 +149,12 @@ const userOptions = users
     .join('');
 
     app.innerHTML = `
-    <div class="page-title">
+      <div class="page-title">
       > REPORT_NEW_GLITCH //
     <span>OPERATIVE INPUT</span>
     </div>
 
-    <div class="form-container">
+    <div class="glitch-card form-card">
 
     <div class="form-group">
         <label class="form-label">
@@ -155,7 +167,7 @@ const userOptions = users
         type="text"
         placeholder="Describe the anomaly..."
         />
-        </div>
+    </div>
 
         <div class="form-group">
         <label class="form-label">
@@ -175,20 +187,24 @@ const userOptions = users
         </label>
 
         <select class="form-select" id="f-priority">
+                <option value="" disabled selected>
+            -- Select Threat Level --
+        </option>
+        
         <option value="AGENT_SMITH">
-            Agent Smith — Critical
+            Agent Smith — CRITICAL
             </option>
 
             <option value="HIGH_ALERT">
-            High Alert
+            High Alert — HIGH
             </option>
 
             <option value="GLITCH">
-            Glitch — Medium
+            Glitch — MEDIUM
             </option>
 
             <option value="DEJA_VU">
-            Déjà Vu — Low
+            Déjà Vu — LOW
             </option>
         </select>
         </div>
@@ -298,11 +314,33 @@ export async function renderOperatives() {
             g.assignedTo === u.name && g.status !== 'SYSTEM_FIXED'
         ).length;
 
+        const profileUrl = u.profileUrl ? 
+        (u.profileUrl.startsWith('http') ? 
+        u.profileUrl : 'https://' + u.profileUrl)
+        : "";
+
         return `
             <div class="operative-card">
-                <div class="operative-avatar">
-                    <img src="${userAvatars[u.name] || 'images/default.jpg'}" alt="${u.name}" />
+            
+                <div class="operative-url">
+
+                    ${profileUrl ? 
+                        `<a href="${profileUrl}" target="_blank" class="profile-link">
+                    <img src="images/github.svg" alt="Github Profile" class="github-icon"></a>` 
+                        : `<img src="images/github.svg" alt="Github Profile" class="github-icon">`}
                 </div>
+
+
+                <div class="operative-avatar">
+                
+<img
+    src="${u.avatar
+        ? `http://localhost:8080${u.avatar}`
+        : (userAvatars[u.name] || 'images/avatar.jpg')}"
+    alt="${u.name}"
+/>
+                </div>
+
                 <div class="operative-name">${u.name}</div>
                 <div class="operative-role">${roleLabels[u.userRole] || u.userRole}</div>
                 <div class="operative-count">${count} active mission${count !== 1 ? 's' : ''}</div>
@@ -322,8 +360,11 @@ export async function renderOperatives() {
             <div class="form-group">
                 <label class="form-label">Name *</label>
                 <input class="form-input" id="op-name" type="text" placeholder="Operative name..." />
-            </div>
-            <div class="form-group">
+          
+                <label class="form-label">Github Profile</label>
+                <input class="form-input" id="op-profile" type="text" placeholder="Github profile URL..." />
+           
+
                 <label class="form-label">Role *</label>
                 <select class="form-select" id="op-role">
                     <option value="OPERATIVE">Operative</option>
@@ -334,7 +375,15 @@ export async function renderOperatives() {
                     <option value="ENGINEER">Engineer</option>
                     <option value="RECRUIT">Recruit</option>
                 </select>
-            </div>
+            
+
+
+    <label class="form-label">PROFILE IMAGE *</label>
+
+    <input class="form-input" id="op-avatar" type="file" accept=".png,.jpg,.jpeg,image/png,image/jpeg"/>
+    </div>
+
+
             <button class="btn-submit" id="btn-submit-operative">> INJECT OPERATIVE</button>
             <div class="msg success" id="msg-op-ok">> OPERATIVE ADDED.</div>
             <div class="msg error" id="msg-op-err">> FAILED TO ADD OPERATIVE.</div>
@@ -353,6 +402,8 @@ export async function renderOperatives() {
     document.getElementById('btn-submit-operative').addEventListener('click', async () => {
         const name = document.getElementById('op-name').value.trim();
         const userRole = document.getElementById('op-role').value;
+        const profileUrl = document.getElementById('op-profile').value.trim();
+        const avatarFile = document.getElementById('op-avatar').files[0];
 
         if (!name) {
             showMsg('msg-op-err', 'ERROR: Name is required.');
@@ -360,14 +411,38 @@ export async function renderOperatives() {
         }
 
         try {
-            await postUser({ name, userRole });
+            let avatar = null;
+
+            if (avatarFile) {
+                avatar = await uploadAvatar(avatarFile);
+            }
+
+            console.log({
+    name,
+    userRole,
+    profileUrl,
+    avatar
+});
+
+            await postUser({
+                name,
+                userRole,
+                profileUrl,
+                avatar
+            });
+
             showMsg('msg-op-ok');
+
             document.getElementById('op-name').value = '';
+            document.getElementById('op-profile').value = '';
+            document.getElementById('op-avatar').value = '';
+
             renderOperatives();
+
         } catch (err) {
             showMsg('msg-op-err', `ERROR: ${err.message}`);
         }
-    });
+});
 
     // Apagar operativo
     document.querySelectorAll('.btn-delete[data-user-id]').forEach(btn => {
@@ -382,6 +457,149 @@ export async function renderOperatives() {
         });
     });
 }
+
+
+// GLITCH DETAILS
+// Renders the detail page for one glitch.
+// The glitch ID comes from the current URL.
+export async function renderGlitchDetails(id) {
+    const app = document.getElementById('app');
+
+    app.innerHTML = `
+        <div class="loading">
+            > LOADING GLITCH DETAILS...
+        </div>
+    `;
+
+    let glitch;
+
+    try {
+        glitch = await fetchGlitchById(id);
+    } catch (err) {
+        app.innerHTML = `
+            <div class="msg error show">
+                > ERROR: Cannot load glitch details.
+                ${err.message}
+            </div>
+        `;
+        return;
+    }
+
+    const pClass = priorityClass[glitch.priority] || 'priority-low';
+
+    const createdAt = glitch.createdAt
+        ? new Date(glitch.createdAt).toLocaleString()
+        : 'Unknown';
+
+    const resolvedAt = glitch.resolvedAt
+        ? new Date(glitch.resolvedAt).toLocaleString()
+        : 'Not resolved';
+
+    app.innerHTML = `
+        <div class="page-title">
+            > GLITCH_DETAILS //
+            <span>#GLT-${String(glitch.id).padStart(4, '0')}</span>
+        </div>
+
+        <div class="glitch-card glitch-details-card">
+            <div class="card-id">
+                #GLT-${String(glitch.id).padStart(4, '0')}
+            </div>
+
+            <div class="card-title glitch-details-title">
+                ${glitch.title}
+            </div>
+
+            <div class="card-footer glitch-details-footer">
+                <span class="priority-badge ${pClass}">
+                    ${priorityLabels[glitch.priority] || glitch.priority}
+                </span>
+
+                <span class="card-assignee">
+                    @${glitch.assignedTo}
+                </span>
+            </div>
+
+            <div class="glitch-details-section">
+                <h3>> DESCRIPTION</h3>
+                <p>${glitch.description || 'No description available.'}</p>
+            </div>
+
+            <div class="glitch-details-grid">
+                <div class="detail-box">
+                    <span>Status</span>
+                    <strong>${statusLabels[glitch.status] || glitch.status}</strong>
+                </div>
+
+                <div class="detail-box ${pClass}">
+                    <span>Priority</span>
+                    <strong>${priorityLabels[glitch.priority] || glitch.priority}</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Assigned To</span>
+                    <strong>${glitch.assignedTo}</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Role</span>
+                    <strong>${roleLabels[glitch.assignedRole] || glitch.assignedRole || 'Unknown'}</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Created At</span>
+                    <strong>${createdAt}</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Resolved At</span>
+                    <strong>${resolvedAt}</strong>
+                </div>
+            </div>
+
+          
+
+            <button class="btn-submit" id="btn-back-dashboard">
+                > RETURN TO DASHBOARD
+            </button>
+
+
+               ${glitch.status !== 'SYSTEM_FIXED' ? `
+    <button class="btn-submit" id="btn-resolve-glitch">
+        > MARK AS RESOLVED
+    </button>
+` : ''}
+        </div>
+    `;
+
+    document
+        .getElementById('btn-resolve-glitch')
+        .addEventListener('click', async () => {
+
+            try {
+                await resolveGlitch(id);
+
+                renderGlitchDetails(id);
+
+            } catch (err) {
+
+                console.error(err);
+            }
+        });
+
+    document
+        .getElementById('btn-back-dashboard')
+        .addEventListener('click', () => {
+
+            window.history.pushState({}, '', '/dashboard');
+
+            renderDashboard();
+        });
+}
+
+
+
+
 
 // ARCHIVE GLITCHES
 // Shows all resolved / fixed glitches (history view)
@@ -422,10 +640,10 @@ export async function renderArchiveGlitches() {
 
             <select class="form-select" id="filter-priority">
                 <option value="">All Priorities</option>
-                <option value="AGENT_SMITH">Agent Smith</option>
-                <option value="HIGH_ALERT">High Alert</option>
-                <option value="GLITCH">Glitch</option>
-                <option value="DEJA_VU">Déjà Vu</option>
+                <option value="AGENT_SMITH">Agent Smith — CRITICAL</option>
+                <option value="HIGH_ALERT">High Alert — HIGH</option>
+                <option value="GLITCH">Glitch — MEDIUM</option>
+                <option value="DEJA_VU">Déjà Vu — LOW</option>
             </select>
         </div>
 
@@ -435,12 +653,15 @@ export async function renderArchiveGlitches() {
     function renderList(filtered) {
         document.getElementById('archive-list').innerHTML = filtered.length === 0
             ? `<div class="empty-col">// NO GLITCHES FOUND //</div>`
-            : filtered.map(g => `
-                <div class="glitch-card archive-card" data-id="${g.id}">
+            : filtered.map(g => {
+                const pClass = priorityClass[g.priority] || 'priority-low';
+
+                return `
+                <div class="glitch-card archive-card" data-glitch-id="${g.id}">
                     <div class="card-id">#GLT-${String(g.id).padStart(4, '0')}</div>
                     <div class="card-title">${g.title}</div>
                     <div class="card-footer">
-                        <span class="priority-badge">${g.priority}</span>
+                        <span class="priority-badge ${pClass}">${g.priority}</span>
                         <span class="card-assignee">${g.assignedTo}</span>
                     </div>
                     <div class="archive-meta">
@@ -448,7 +669,8 @@ export async function renderArchiveGlitches() {
                         ${g.resolvedAt ? `| Resolved: ${new Date(g.resolvedAt).toLocaleString()}` : ''}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
     }
 
     function applyFilters() {

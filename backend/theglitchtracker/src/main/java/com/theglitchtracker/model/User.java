@@ -16,6 +16,8 @@ public class User {
     private int id;
 
     private String name;
+    private String profileUrl;
+    private String avatar;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -33,6 +35,22 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getName() {

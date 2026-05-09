@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.List;
@@ -30,6 +31,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
+        String avatarPath = userService.uploadAvatar(file);
+
+        return ResponseEntity.ok(avatarPath);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable int id, @RequestBody User user) {

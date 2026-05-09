@@ -88,6 +88,14 @@ public class GlitchController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/resolve")
+    public ResponseEntity<Glitch> resolveGlitch(@PathVariable int id) {
+
+        Glitch resolvedGlitch = glitchService.resolveGlitch(id);
+
+        return ResponseEntity.ok(resolvedGlitch);
+    }
+
 
     @Autowired
     public void setGlitchService(GlitchService glitchService) {

@@ -4,6 +4,7 @@ import com.theglitchtracker.model.Glitch;
 import com.theglitchtracker.model.GlitchPriority;
 import com.theglitchtracker.model.GlitchStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface GlitchService {
@@ -25,5 +26,7 @@ public interface GlitchService {
     public Glitch removeUserFromGlitch(int glitchId, int userId);
 
     public void deleteGlitch(int glitchId);
+
+    public Glitch resolveGlitch(int glitchId);
 }
 

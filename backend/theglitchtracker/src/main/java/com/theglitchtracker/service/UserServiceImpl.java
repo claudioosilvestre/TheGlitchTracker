@@ -6,14 +6,62 @@ import com.theglitchtracker.model.User;
 import com.theglitchtracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
 
+
+    @Override
+    public String uploadAvatar(MultipartFile file) {
+
+        String contentType = file.getContentType();
+
+        if (
+                contentType == null ||
+                        (!contentType.equals("image/png") &&
+                                !contentType.equals("image/jpeg"))
+        ) {
+            throw new RuntimeException("Only PNG and JPG images are allowed");
+        }
+
+        String originalFilename = file.getOriginalFilename();
+
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new RuntimeException("Invalid file name");
+        }
+
+        String filename = UUID.randomUUID() + "_" + originalFilename;
+
+        try {
+            Path uploadPath = Paths
+                    .get("uploads", "avatars")
+                    .toAbsolutePath()
+                    .normalize();
+
+            Files.createDirectories(uploadPath);
+
+            Path destinationFile = uploadPath
+                    .resolve(filename)
+                    .normalize();
+
+            file.transferTo(destinationFile.toFile());
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload avatar image: " + e.getMessage(), e);
+        }
+
+        return "/uploads/avatars/" + filename;
+    }
 
     @Override
     public List<User> listAllUsers() {
@@ -64,6 +112,7 @@ public class UserServiceImpl implements UserService {
 
         updatedUser.setName(user.getName());
         updatedUser.setUserRole(user.getUserRole());
+        updatedUser.setProfileUrl(user.getProfileUrl());
 
         userRepository.save(updatedUser);
 

@@ -13,10 +13,23 @@ export const roleLabels = {
 
 // PRIORITY MAP
 export const priorityClass = {
-    'Agent Smith': 'priority-critical',
-    'High Alert': 'priority-high',
-    'Glitch': 'priority-medium',
-    'Deja Vu': 'priority-low',
+    'AGENT_SMITH': 'priority-critical',
+    'HIGH_ALERT': 'priority-high',
+    'GLITCH': 'priority-medium',
+    'DEJA_VU': 'priority-low',
+};
+
+export const statusLabels = {
+    'IDENTIFIED': 'Identified',
+    'BENDING_THE_RULES': 'Bending the Rules',
+    'SYSTEM_FIXED': 'System Fixed',
+};
+
+export const priorityLabels = {
+    'AGENT_SMITH': 'Agent Smith',
+    'HIGH_ALERT': 'High Alert',
+    'GLITCH': 'Glitch',
+    'DEJA_VU': 'Déjà Vu',
 };
 
 
