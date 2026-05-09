@@ -7,6 +7,10 @@ export function initMatrixRain() {
 
     const canvas = document.createElement('canvas');
 
+    if (!container) {
+        return;
+    }
+
     container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
@@ -71,9 +75,11 @@ export function initClock() {
     function tick() {
     const now = new Date();
 
-    el.textContent =
+    if (!el) {
+        return;
+    }
 
-    now.toLocaleTimeString('en-GB');
+    el.textContent = now.toLocaleTimeString('en-GB');
 }
 
 tick();

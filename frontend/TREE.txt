@@ -1,0 +1,40 @@
+FRONTEND_REFACTORED/
+│
+├── index.html
+│
+├── css/
+│   ├── oracle.css
+│   └── sleek.css
+│
+├── js/
+│   ├── main.js
+│   ├── router.js
+│   ├── api.js
+│   ├── utils.js
+│   ├── theme.js
+│   ├── effects.js
+│   ├── components.js
+│   │
+│   ├── pages/
+│   │   ├── dashboardPage.js
+│   │   ├── newGlitchPage.js
+│   │   ├── operativesPage.js
+│   │   ├── glitchDetailsPage.js
+│   │   └── archiveGlitchesPage.js
+│   │
+│   ├── actions/
+│   │   ├── glitchActions.js
+│   │   ├── operativeActions.js
+│   │   ├── navigationActions.js
+│   │   └── uiActions.js
+│   │
+│   └── data/
+│       └── mockData.js
+│
+├── images/
+│   └── colocar aqui: avatar.jpg, chico.png, claudio.png, github.svg, maria.png
+│
+└── assets/
+    ├── fonts/
+    ├── sounds/
+    └── icons/

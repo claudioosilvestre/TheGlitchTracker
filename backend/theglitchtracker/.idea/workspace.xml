@@ -5,24 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/WebConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/GlitchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/GlitchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/Glitch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/Glitch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/GlitchServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/components.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/components.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/oracle.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/oracle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/pages.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/pages.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../frontend/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/api.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/components.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/images/avatar.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/images/chico.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/images/claudio.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/images/github.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/images/maria.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/oracle.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/pages.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frontend/utils.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +134,7 @@
       <workItem from="1777914768907" duration="1392000" />
       <workItem from="1778086176694" duration="929000" />
       <workItem from="1778167328758" duration="937000" />
-      <workItem from="1778324917339" duration="10951000" />
+      <workItem from="1778324917339" duration="17933000" />
     </task>
     <servers />
   </component>
