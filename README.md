@@ -26,10 +26,12 @@ This project was developed as the final project of the 26-week Software Engineer
     ```bash
     git clone https://github.com/Maria-Sousa-GH/Oracle.git
     ```
-2.  **Configure Database:** ```bash
+2.  **Configure Database:** 
+    ```bash
     CREATE DATABASE theglitchtracker;
     ```
-3.  **Configure application.properties:** ```bash
+3.  **Configure application.properties:** 
+    ```bash
     Update the following fields in src/main/resources/application.properties:
     
     - DATABASE
@@ -40,10 +42,12 @@ This project was developed as the final project of the 26-week Software Engineer
     - OPENAI
     spring.ai.openai.api-key=your_openai_api_key
     ```
-4.  **Run the application:**```bash
+4.  **Run the application:**
+    ```bash
     mvn spring-boot:run
     ```
-5.  **Open your browser and go to http://localhost:8080**```bash
+5.  **Open your browser and go to http://localhost:8080**
+    ```bash
     Note: All database tables are created automatically on the first run (spring.jpa.hibernate.ddl-auto=update).
     ```
 
