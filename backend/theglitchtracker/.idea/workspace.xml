@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/VectorStoreConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/VectorStoreConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/AiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/AiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/ai/templates/rag-prompt-template.st" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ai/templates/rag-prompt-template.st" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.vscode/settings.json" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,7 +124,7 @@
       <workItem from="1778086176694" duration="929000" />
       <workItem from="1778167328758" duration="937000" />
       <workItem from="1778324917339" duration="17933000" />
-      <workItem from="1778393965772" duration="3793000" />
+      <workItem from="1778393965772" duration="4126000" />
     </task>
     <servers />
   </component>
