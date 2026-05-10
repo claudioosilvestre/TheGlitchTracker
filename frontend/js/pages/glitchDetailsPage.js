@@ -1,6 +1,7 @@
 import {
     fetchGlitchById,
-    fetchUsers
+    fetchUsers,
+    deleteGlitch
 } from '../api.js';
 
 import {
@@ -71,129 +72,87 @@ export async function renderGlitchDetails(id) {
     app.innerHTML = `
         <div class="page-title">
             > GLITCH_DETAILS //
-            <span>#GLT-${String(glitch.id).padStart(4, '0')}</span>
+            <span>#GLT-${String(glitch.id).padStart(4, '0')}</span
+        </div>
+        
+        <div class="glitch-card glitch-details-card">
+
+        <div class="card-header-row">
+        <div>
+            <div class="card-id">#GLT-${String(glitch.id).padStart(4, '0')}</div>
+            <div class="card-title glitch-details-title">${glitch.title}</div>
+        </div>
+        <button class="btn-delete" id="btn-delete-glitch">✕ DELETE</button>
+        </div>
+        
+        <div class="card-footer glitch-details-footer">
+            <span class="priority-badge ${pClass}">
+                ${priorityLabels[glitch.priority] || glitch.priority}
+            </span>
+            <span class="card-assignee">@${glitch.assignedTo}</span>
         </div>
 
-        <div class="glitch-card glitch-details-card">
-            <div class="card-id">
-                #GLT-${String(glitch.id).padStart(4, '0')}
-            </div>
+        <div class="glitch-details-section">
+            <h3>> DESCRIPTION</h3>
+            <p>${glitch.description || 'No description available.'}</p>
+        </div>
 
-            <div class="card-title glitch-details-title">
-                ${glitch.title}
-            </div>
+        <div class="glitch-details-grid">
+        <div class="detail-box">
+            <span>Status</span>
+            <strong class="view-mode">${statusLabels[glitch.status] || glitch.status}</strong>
+            <select class="form-select edit-mode" id="edit-status" style="display:none;">
+                <option value="IDENTIFIED" ${glitch.status === 'IDENTIFIED' ? 'selected' : ''}>Identified</option>
+                <option value="BENDING_THE_RULES" ${glitch.status === 'BENDING_THE_RULES' ? 'selected' : ''}>Bending the Rules</option>
+                <option value="SYSTEM_FIXED" ${glitch.status === 'SYSTEM_FIXED' ? 'selected' : ''}>System Fixed</option>
+            </select>
+        </div>
 
-            <div class="card-footer glitch-details-footer">
-                <span class="priority-badge ${pClass}">
-                    ${priorityLabels[glitch.priority] || glitch.priority}
-                </span>
+        <div class="detail-box ${pClass}">
+            <span>Priority</span>
+            <strong class="view-mode">${priorityLabels[glitch.priority] || glitch.priority}</strong>
+            <select class="form-select edit-mode" id="edit-priority" style="display:none;">
+                <option value="AGENT_SMITH" ${glitch.priority === 'AGENT_SMITH' ? 'selected' : ''}>Agent Smith — CRITICAL</option>
+                <option value="HIGH_ALERT" ${glitch.priority === 'HIGH_ALERT' ? 'selected' : ''}>High Alert — HIGH</option>
+                <option value="GLITCH" ${glitch.priority === 'GLITCH' ? 'selected' : ''}>Glitch — MEDIUM</option>
+                <option value="DEJA_VU" ${glitch.priority === 'DEJA_VU' ? 'selected' : ''}>Déjà Vu — LOW</option>
+            </select>
+        </div>
 
-                <span class="card-assignee">
-                    @${glitch.assignedTo}
-                </span>
-            </div>
+        <div class="detail-box">
+            <span>Assigned To</span>
+            <strong class="view-mode">${glitch.assignedTo}</strong>
+            <select class="form-select edit-mode" id="edit-user" style="display:none;">
+                ${userOptions}
+            </select>
+        </div>
 
-            <div class="glitch-details-section">
-                <h3>> DESCRIPTION</h3>
-                <p>${glitch.description || 'No description available.'}</p>
-            </div>
+        <div class="detail-box">
+            <span>Role</span>
+            <strong>${roleLabels[glitch.assignedRole] || glitch.assignedRole || 'Unknown'}</strong>
+        </div>
 
-            <div class="glitch-details-grid">
-                <div class="detail-box">
-                    <span>Status</span>
+        <div class="detail-box">
+            <span>Created At</span>
+            <strong>${createdAt}</strong>
+        </div>
 
-                    <strong class="view-mode">
-                        ${statusLabels[glitch.status] || glitch.status}
-                    </strong>
-
-                    <select class="form-select edit-mode" id="edit-status" style="display:none;">
-                        <option value="IDENTIFIED" ${glitch.status === 'IDENTIFIED' ? 'selected' : ''}>
-                            Identified
-                        </option>
-
-                        <option value="BENDING_THE_RULES" ${glitch.status === 'BENDING_THE_RULES' ? 'selected' : ''}>
-                            Bending the Rules
-                        </option>
-
-                        <option value="SYSTEM_FIXED" ${glitch.status === 'SYSTEM_FIXED' ? 'selected' : ''}>
-                            System Fixed
-                        </option>
-                    </select>
-                </div>
-
-                <div class="detail-box ${pClass}">
-                    <span>Priority</span>
-
-                    <strong class="view-mode">
-                        ${priorityLabels[glitch.priority] || glitch.priority}
-                    </strong>
-
-                    <select class="form-select edit-mode" id="edit-priority" style="display:none;">
-                        <option value="AGENT_SMITH" ${glitch.priority === 'AGENT_SMITH' ? 'selected' : ''}>
-                            Agent Smith — CRITICAL
-                        </option>
-
-                        <option value="HIGH_ALERT" ${glitch.priority === 'HIGH_ALERT' ? 'selected' : ''}>
-                            High Alert — HIGH
-                        </option>
-
-                        <option value="GLITCH" ${glitch.priority === 'GLITCH' ? 'selected' : ''}>
-                            Glitch — MEDIUM
-                        </option>
-
-                        <option value="DEJA_VU" ${glitch.priority === 'DEJA_VU' ? 'selected' : ''}>
-                            Déjà Vu — LOW
-                        </option>
-                    </select>
-                </div>
-
-                <div class="detail-box">
-                    <span>Assigned To</span>
-
-                    <strong class="view-mode">
-                        ${glitch.assignedTo}
-                    </strong>
-
-                    <select class="form-select edit-mode" id="edit-user" style="display:none;">
-                        ${userOptions}
-                    </select>
-                </div>
-
-                <div class="detail-box">
-                    <span>Role</span>
-                    <strong>${roleLabels[glitch.assignedRole] || glitch.assignedRole || 'Unknown'}</strong>
-                </div>
-
-                <div class="detail-box">
-                    <span>Created At</span>
-                    <strong>${createdAt}</strong>
-                </div>
-
-                <div class="detail-box">
-                    <span>Resolved At</span>
-                    <strong>${resolvedAt}</strong>
-                </div>
-            </div>
-
-            <button class="btn-submit" id="btn-back-dashboard">
-                > RETURN TO DASHBOARD
-            </button>
-
-            <button class="btn-submit" id="btn-edit-glitch">
-                > EDIT
-            </button>
-
-            <button class="btn-submit" id="btn-save-glitch" style="display:none;">
-                > SAVE CHANGES
-            </button>
-
+        <div class="detail-box">
+            <span>Resolved At</span>
+            <strong>${resolvedAt}</strong>
+        </div>
+        </div>
+        
+        <div class="details-actions">
+            <button class="btn-submit" id="btn-back-dashboard">> RETURN TO DASHBOARD</button>
+            <button class="btn-submit" id="btn-edit-glitch">> EDIT</button>
+            <button class="btn-submit" id="btn-save-glitch" style="display:none;">> SAVE CHANGES</button>
             ${glitch.status !== 'SYSTEM_FIXED' ? `
-                <button class="btn-submit" id="btn-resolve-glitch">
-                    > MARK AS RESOLVED
-                </button>
+            <button class="btn-submit" id="btn-resolve-glitch">> MARK AS RESOLVED</button>
             ` : ''}
         </div>
-    `;
+    </div>
+`;
 
     bindBackDashboardButton();
 
@@ -202,4 +161,16 @@ export async function renderGlitchDetails(id) {
     if (glitch.status !== 'SYSTEM_FIXED') {
         bindResolveGlitchButton(id);
     }
+
+    document.getElementById('btn-delete-glitch').addEventListener('click', async () => {
+        if (!confirm('Are you sure you want to delete this glitch?')) return;
+
+        try {
+            await deleteGlitch(id);
+            window.history.pushState({}, '', '/dashboard');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+        } catch (err) {
+            console.error(err);
+        }
+    });
 }

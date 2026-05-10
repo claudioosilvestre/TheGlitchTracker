@@ -1,8 +1,8 @@
 // THEME SWITCHER
 // Changes the active CSS theme dynamically.
 
-const ORACLE_THEME = 'css/oracle.css';
-const SLEEK_THEME = 'css/sleek.css';
+const ORACLE_THEME = '/css/oracle.css';
+const SLEEK_THEME = '/css/sleek.css';
 
 
 // Updates the switch visual state.

@@ -735,9 +735,9 @@ body {
 }
 
 .glitch-details-title {
-  margin-top: 12px;
-  font-size: 28px;
-  font-weight: 800;
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 700;
   color: var(--text);
 }
 
@@ -756,12 +756,13 @@ body {
 .glitch-details-section h3 {
   margin-bottom: 12px;
   color: var(--green-dim);
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 800;
 }
 
 .glitch-details-section p {
-  line-height: 1.7;
+  line-height: 1.5;
+  font-size: 0.85rem;
   color: var(--text);
 }
 
@@ -772,23 +773,36 @@ body {
   margin-bottom: 24px;
 }
 
+.card-header-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+
 .detail-box {
   border: 1px solid var(--border);
   background: #fafcfd;
   border-radius: 16px;
-  padding: 16px;
+  padding: 10px 12px;
 }
 
 .detail-box span {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .detail-box strong {
   color: var(--text);
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.78rem;
 }
 
 .form-card {
@@ -798,6 +812,11 @@ body {
 .form-card .btn-submit {
   width: 100%;
   margin-top: 8px;
+}
+
+.btn-submit {
+  font-size: 0.80rem;
+  padding: 0.80rem 1.5rem;
 }
 
 .form-card .msg {
