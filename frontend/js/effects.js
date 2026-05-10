@@ -5,64 +5,47 @@
 export function initMatrixRain() {
     const container = document.getElementById('matrixRain');
 
-    const canvas = document.createElement('canvas');
-
     if (!container) {
         return;
     }
 
+    const canvas = document.createElement('canvas');
     container.appendChild(canvas);
 
     const ctx = canvas.getContext('2d');
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const chars = '01アイウエオカキクケコサシスセソタチ'.split('');
 
-    const cols = Math.floor(canvas.width / 16);
+    let cols, drops;
 
-    const drops = Array(cols).fill(1);
-
-    const chars =
-    '01アイウエオカキクケコサシスセソタチ'.split('');
-
-    function draw() {
-    ctx.fillStyle = 'rgba(0,0,0,0.05)';
-
-    ctx.fillRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.fillStyle = '#00ff41';
-
-    ctx.font = '14px Share Tech Mono';
-
-    drops.forEach((y, i) => {
-
-        const char =
-        chars[Math.floor(Math.random() * chars.length)];
-
-      ctx.fillText(char, i * 16, y * 16);
-
-    if (
-        y * 16 > canvas.height &&
-        Math.random() > 0.975
-    ) {
-        drops[i] = 0;
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols = Math.floor(canvas.width / 16);
+        drops = Array(cols).fill(1);
     }
 
-    drops[i]++;
-    });
-}
+    function draw() {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff41';
+        ctx.font = '14px Share Tech Mono';
 
-setInterval(draw, 60);
+        drops.forEach((y, i) => {
+            const char = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillText(char, i * 16, y * 16);
 
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+            if (y * 16 > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        });
+    }
+
+    resize();
+    setInterval(draw, 60);
+
+    window.addEventListener('resize', resize);
 }
 
 
@@ -73,16 +56,11 @@ export function initClock() {
     const el = document.getElementById('clock');
 
     function tick() {
-    const now = new Date();
-
-    if (!el) {
-        return;
+        const now = new Date();
+        if (!el) return;
+        el.textContent = now.toLocaleTimeString('en-GB');
     }
 
-    el.textContent = now.toLocaleTimeString('en-GB');
-}
-
-tick();
-
-setInterval(tick, 1000);
+    tick();
+    setInterval(tick, 1000);
 }
