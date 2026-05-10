@@ -222,3 +222,14 @@ export async function uploadAvatar(file) {
 
     return res.text();
 }
+
+// Delete Glitch
+export async function deleteGlitch(id) {
+    const res = await fetch(`${API_BASE}/glitches/${id}`, {
+        method: 'DELETE',
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to delete glitch');
+    }
+}

@@ -368,6 +368,13 @@ html, body {
   gap: 0.3rem;
 }
 
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
 /* NOTA: Badges de prioridade */
 .priority-badge {
   font-size: 0.6rem;
@@ -755,8 +762,8 @@ html, body {
 }
 
 .glitch-details-title {
-  margin-top: 12px;
-  font-size: 28px;
+  margin-top: 8px;
+  font-size: 18px;
 }
 
 .glitch-details-footer {
@@ -772,8 +779,9 @@ html, body {
 }
 
 .glitch-details-section h3 {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: #00ff41;
+  font-size: 0.82rem;
 }
 
 .glitch-details-section p {
@@ -790,18 +798,22 @@ html, body {
 .detail-box {
   border: 1px solid rgba(0, 255, 65, 0.35);
   background: rgba(0, 0, 0, 0.45);
-  padding: 16px;
+  padding: 10px 12px;
 }
 
 .detail-box span {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   opacity: 0.7;
-  font-size: 13px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .detail-box strong {
   color: #00ff41;
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 /* ── FORM CARD ── */
