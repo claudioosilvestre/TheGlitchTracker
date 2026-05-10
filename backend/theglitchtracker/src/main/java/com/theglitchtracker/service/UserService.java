@@ -13,7 +13,6 @@ public interface UserService {
 
     public User createUser(User user);
 
-
     public User updateUser(int userId, User user);
 
     public User findById(int userId);

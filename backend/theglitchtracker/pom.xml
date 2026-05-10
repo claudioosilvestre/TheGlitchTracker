@@ -78,13 +78,6 @@
             <artifactId>spring-ai-tika-document-reader</artifactId>
         </dependency>
 
-        <!-- TEST -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-
         <!-- QuestionAnswerAdvisor agora é Spring AI Advisor -->
         <dependency>
             <groupId>org.springframework.ai</groupId>

@@ -6,17 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="7d7b38c4-82e7-4cd1-962b-d4f158a3dac0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/api.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/components.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/images/avatar.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/images/chico.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/images/claudio.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/images/github.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/images/maria.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/oracle.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/pages.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frontend/utils.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/VectorStoreConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/config/VectorStoreConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/AiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/controller/AiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/AiServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theglitchtracker/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/ai/templates/rag-prompt-template.st" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/ai/templates/rag-prompt-template.st" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,18 +32,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "fdinisdealmeida"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;fdinisdealmeida&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "git@github.com:Maria-Sousa-GH/Oracle.git",
-    "accountId": "e730ae1e-3daa-40e9-b543-99c596ada907"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Maria-Sousa-GH/Oracle.git&quot;,
+    &quot;accountId&quot;: &quot;e730ae1e-3daa-40e9-b543-99c596ada907&quot;
   }
-}]]></component>
+}</component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -75,7 +72,7 @@
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Spring Boot.TheGlitchTrackerApplication.executor": "Run",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "claudio",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Francisco de Almeida/Documents/ORACLE/Oracle/backend/theglitchtracker",
     "node.js.detected.package.eslint": "true",
@@ -135,6 +132,7 @@
       <workItem from="1778086176694" duration="929000" />
       <workItem from="1778167328758" duration="937000" />
       <workItem from="1778324917339" duration="17933000" />
+      <workItem from="1778393965772" duration="3793000" />
     </task>
     <servers />
   </component>

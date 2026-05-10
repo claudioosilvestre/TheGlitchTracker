@@ -10,14 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-
-
 import java.util.List;
 import java.util.Map;
 
-/**
- * Implementation of the {@link AiService} interface.
- */
 @Service
 public class AiServiceImpl implements AiService {
 
@@ -28,9 +23,6 @@ public class AiServiceImpl implements AiService {
     private RagVectorStoreService vectorStore;
 
 
-    /**
-     * @see AiService#info(String)
-     */
     @Override
     public Generation info(String question) {
         List<String> contentList = vectorStore.search(question);
@@ -43,19 +35,24 @@ public class AiServiceImpl implements AiService {
         return chatClient.prompt(prompt).call().chatResponse().getResult();
     }
 
-    /**
-     * Set the chat client
-     * @param chatClient to chat
-     */
+    @Override
+    public String generateOracleQuote() {
+        return chatClient.prompt()
+                .user("You are the Oracle from the Matrix. Generate a short, cryptic, philosophical quote " +
+                        "as if spoken by the Oracle herself — wise, mysterious, and slightly unsettling. " +
+                        "It should hint at glitches, anomalies, or hidden truths in the system. " +
+                        "Every time you respond, the quote must be different and surprising. " +
+                        "Draw inspiration from different themes each time: fate, choice, time, code, reality, or deception. " +
+                        "Maximum 15 words. Return only the quote, no quotation marks, no explanation.")
+                .call()
+                .content();
+    }
+
     @Autowired
     public void setChatClient(ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
-    /**
-     * Set the vector store
-     * @param vectorStore to set
-     */
     @Autowired
     public void setStore(RagVectorStoreService vectorStore) {
         this.vectorStore = vectorStore;

@@ -7,6 +7,8 @@ import {
 
 import { initThemeSwitcher } from './theme.js';
 
+import { loadOracleQuote } from './oracleQuote.js';
+
 
 // INIT
 // Initializes visual effects, theme switcher and SPA router.
@@ -17,3 +19,7 @@ initClock();
 initThemeSwitcher();
 
 initRouter();
+
+loadOracleQuote();
+
+
