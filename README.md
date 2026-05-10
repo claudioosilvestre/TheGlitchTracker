@@ -47,9 +47,9 @@ This project was developed as the final project of the 26-week Software Engineer
     mvn spring-boot:run
     ```
 5.  **Open your browser and go to http://localhost:8080**
-    ```bash
-    Note: All database tables are created automatically on the first run (spring.jpa.hibernate.ddl-auto=update).
-    ```
+
+> **Note:** All database tables are created automatically on the first run (spring.jpa.hibernate.ddl-auto=update).
+
 
 
 ## Features
@@ -79,4 +79,4 @@ This project was developed as the final project of the 26-week Software Engineer
 ## Authors
 *   ** Cláudio Silvestre ** — [LinkedIn](https://www.linkedin.com/in/claudioosilvestre)
 *   ** Francisco Almeida ** — [LinkedIn](https://www.linkedin.com/in/fdinisdealmeida)
-*   ** Maria Sousa ** — [LinkedIn]()
+*   ** Maria Sousa ** — [LinkedIn](https://www.linkedin.com/in/maria-sousa-gh)
