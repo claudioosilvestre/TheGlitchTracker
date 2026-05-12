@@ -24,7 +24,7 @@ This project was developed as the final project of the 26-week Software Engineer
 ### How to Run
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/Maria-Sousa-GH/Oracle.git
+    git clone https://github.com/claudioosilvestre/TheGlitchTracker.git
     ```
 2.  **Configure Database:** 
     ```bash
