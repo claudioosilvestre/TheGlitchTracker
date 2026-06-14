@@ -4,29 +4,31 @@ import com.theglitchtracker.model.Glitch;
 import com.theglitchtracker.model.GlitchPriority;
 import com.theglitchtracker.model.GlitchStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface GlitchService {
 
-    public List<Glitch> listAllGlitches();
+    List<Glitch> listAllGlitches();
 
-    public Glitch getGlitchById(int glitchId);
+    Glitch getGlitchById(int glitchId);
 
-    public Glitch createGlitch(Glitch glitch);
+    Glitch createGlitch(Glitch glitch);
 
-    public Glitch updateGlitch(int glitchId, Glitch glitch);
+    Glitch updateGlitch(int glitchId, Glitch glitch);
 
-    public Glitch updateStatus(int glitchId, GlitchStatus glitchStatus);
+    Glitch updateStatus(int glitchId, GlitchStatus glitchStatus);
 
-    public Glitch updateGlitchPriority(int glitchId, GlitchPriority glitchPriority);
+    Glitch updateGlitchPriority(int glitchId, GlitchPriority glitchPriority);
 
-    public Glitch addUserToGlitch(int glitchId, int userId);
+    Glitch addUserToGlitch(int glitchId, int userId);
 
-    public Glitch removeUserFromGlitch(int glitchId, int userId);
+    Map<GlitchPriority, Long> glitchSummary();
 
-    public void deleteGlitch(int glitchId);
+    Glitch removeUserFromGlitch(int glitchId, int userId);
 
-    public Glitch resolveGlitch(int glitchId);
+    void deleteGlitch(int glitchId);
+
+    Glitch resolveGlitch(int glitchId);
 }
 
