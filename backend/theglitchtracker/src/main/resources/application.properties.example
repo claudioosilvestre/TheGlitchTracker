@@ -5,6 +5,7 @@ spring.datasource.username=postgres
 spring.datasource.password=admin
 
 spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
@@ -21,7 +22,7 @@ spring.ai.openai.temperature=0.4
 ai.vector_store_file=/tmp/vector_store.json
 ai.rag_number_results=3
 ai.rag_documents=
-ai.rag_prompt_template=classpat
+ai.rag_prompt_template=classpath:/ai/templates/rag-prompt-template.st
 
 
 spring.web.resources.static-locations=classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:../../frontend/

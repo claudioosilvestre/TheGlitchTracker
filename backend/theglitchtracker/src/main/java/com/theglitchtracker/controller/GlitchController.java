@@ -1,14 +1,15 @@
 package com.theglitchtracker.controller;
 
 import com.theglitchtracker.model.Glitch;
+import com.theglitchtracker.model.GlitchPriority;
 import com.theglitchtracker.service.GlitchService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.theglitchtracker.dtos.GlitchUserDTO;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -16,6 +17,10 @@ import java.util.List;
 public class GlitchController {
 
     private GlitchService glitchService;
+
+    public GlitchController(GlitchService glitchService) {
+        this.glitchService = glitchService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Glitch>> getAll() {
@@ -96,9 +101,4 @@ public class GlitchController {
         return ResponseEntity.ok(resolvedGlitch);
     }
 
-
-    @Autowired
-    public void setGlitchService(GlitchService glitchService) {
-        this.glitchService = glitchService;
-    }
 }
