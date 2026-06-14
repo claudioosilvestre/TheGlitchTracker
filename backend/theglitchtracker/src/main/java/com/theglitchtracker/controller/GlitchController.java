@@ -77,6 +77,12 @@ public class GlitchController {
         return ResponseEntity.ok(updatedGlitch);
     }
 
+    @GetMapping("/summary")
+    public ResponseEntity<Map<GlitchPriority, Long>> glitchSummary() {
+
+        return ResponseEntity.ok(glitchService.glitchSummary());
+    }
+
     @DeleteMapping("/{id}/users/{userId}")
     public ResponseEntity<Glitch> removeUserFromGlitch(@PathVariable int id, @PathVariable int userId) {
 

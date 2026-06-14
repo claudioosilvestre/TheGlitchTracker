@@ -124,6 +124,18 @@ public class GlitchServiceImpl implements GlitchService {
     }
 
     @Override
+    public Map<GlitchPriority, Long> glitchSummary() {
+
+        Map<GlitchPriority, Long> glitchPriorityMap = glitchRepository.findAll()
+                .stream()
+                .filter(glitch -> glitch.getGlitchStatus() != null)
+                .collect(Collectors.groupingBy(glitch -> glitch.getGlitchPriority(), Collectors.counting()));
+
+
+        return glitchPriorityMap;
+    }
+
+    @Override
     public Glitch removeUserFromGlitch(int glitchId, int userId) {
         if (glitchId <= 0) {
             throw new IllegalArgumentException("Glitch Id must be positive");
