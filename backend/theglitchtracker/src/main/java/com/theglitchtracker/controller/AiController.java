@@ -1,7 +1,6 @@
 package com.theglitchtracker.controller;
 
 import com.theglitchtracker.service.AiService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,14 +14,13 @@ public class AiController {
 
     private AiService aiService;
 
+    public AiController(AiService aiService) {
+        this.aiService = aiService;
+    }
+
     @GetMapping("/quote")
     public ResponseEntity<String> generatePhraseOracle() {
         return ResponseEntity.ok(aiService.generateOracleQuote());
     }
 
-
-    @Autowired
-    public void setAiService(AiService aiService) {
-        this.aiService = aiService;
-    }
 }
