@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GlitchServiceImpl implements GlitchService {
@@ -118,6 +121,18 @@ public class GlitchServiceImpl implements GlitchService {
         glitch.setUser(userService.findById(userId));
 
         return glitchRepository.save(glitch);
+    }
+
+    @Override
+    public Map<GlitchPriority, Long> glitchSummary() {
+
+        Map<GlitchPriority, Long> glitchPriorityMap = glitchRepository.findAll()
+                .stream()
+                .filter(glitch -> glitch.getGlitchStatus() != null)
+                .collect(Collectors.groupingBy(glitch -> glitch.getGlitchPriority(), Collectors.counting()));
+
+
+        return glitchPriorityMap;
     }
 
     @Override

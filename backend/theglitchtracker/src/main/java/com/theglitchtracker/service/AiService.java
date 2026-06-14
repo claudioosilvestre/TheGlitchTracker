@@ -4,8 +4,8 @@ import org.springframework.ai.chat.model.Generation;
 
 public interface AiService {
 
-    public Generation info(String question);
+    Generation info(String question);
 
-    public String generateOracleQuote();
+    String generateOracleQuote();
 }
 

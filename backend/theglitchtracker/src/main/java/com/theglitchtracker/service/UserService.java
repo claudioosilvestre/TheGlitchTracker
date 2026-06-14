@@ -9,14 +9,14 @@ public interface UserService {
 
     String uploadAvatar(MultipartFile file);
 
-    public List<User> listAllUsers();
+    List<User> listAllUsers();
 
-    public User createUser(User user);
+    User createUser(User user);
 
-    public User updateUser(int userId, User user);
+    User updateUser(int userId, User user);
 
-    public User findById(int userId);
+    User findById(int userId);
 
-    public void deleteUser(int userId);
+    void deleteUser(int userId);
 
 }
