@@ -8,7 +8,7 @@ This project was developed as the final project of the 26-week Software Engineer
 - **Backend:** Java 21, Spring Boot, Spring Data JPA, Hibernate, Rest APIs
 - **Frontend:** HTML5, CSS3, Vanilla JavaScript
 - **AI Integration:** Spring AI + OpenAI (Chat & Embeddings) with RAG (Retrieval-Augmented Generation)
-- **Databse:** PostgreSQL
+- **Database:** PostgreSQL
 - **Build Tool:** Maven
 
 ## Getting Started
