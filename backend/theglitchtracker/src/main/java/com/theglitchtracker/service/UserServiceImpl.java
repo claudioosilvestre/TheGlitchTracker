@@ -102,9 +102,6 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = userRepository.findById(userId).get();
 
-        if(userRepository.findByName(user.getName()).isPresent()) {
-            throw new UserAlreadyExistsException();
-        }
         if(!updatedUser.getName().equals(user.getName()) &&
                 userRepository.findByName(user.getName()).isPresent()) {
             throw new UserAlreadyExistsException();
