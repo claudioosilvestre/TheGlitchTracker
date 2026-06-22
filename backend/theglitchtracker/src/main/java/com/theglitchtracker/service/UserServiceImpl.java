@@ -83,9 +83,9 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException();
         }
 
-        userRepository.save(user);
+        User newUser = userRepository.save(user);
 
-        return user;
+        return newUser;
     }
 
     @Override
