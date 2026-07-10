@@ -219,6 +219,43 @@ public class UserServiceImplTests {
     }
 
     @Test
+    public void findById_shouldReturnUser() {
+
+        User user = new User();
+        user.setId(1);
+        user.setName("test");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        User result = userService.findById(1);
+
+        assertNotNull(result);
+        assertEquals("test", result.getName());
+    }
+
+    @Test
+    public void findById_shouldThrowExceptionIfIdIsNegative() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.findById(-1)
+        );
+
+        assertEquals("Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    public void findById_shouldThrowExceptionIfUserNotFound() {
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.findById(1)
+        );
+
+        assertEquals("User does not exist", exception.getMessage());
+    }
+
+    @Test
     public void deleteUser_shouldDeleteUserFromDatabase() {
 
         User user = new User();
@@ -232,4 +269,25 @@ public class UserServiceImplTests {
         verify(userRepository, times(1)).deleteById(1);
     }
 
+    @Test
+    public void deleteUser_shouldThrowExceptionIfUserIdIsNegative() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.deleteUser(-1)
+        );
+
+        assertEquals("Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    public void deleteUser_shouldThrowExceptionIfUserNotFound() {
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.deleteUser(1)
+        );
+
+        assertEquals("User does not exist", exception.getMessage());
+    }
 }
