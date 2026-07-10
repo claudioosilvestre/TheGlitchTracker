@@ -1,7 +1,9 @@
 package com.theglitchtracker.service;
 
 import com.theglitchtracker.exception.UserAlreadyExistsException;
+import com.theglitchtracker.exception.UserNotFoundException;
 import com.theglitchtracker.model.User;
+import com.theglitchtracker.model.UserRole;
 import com.theglitchtracker.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,6 +67,40 @@ public class UserServiceImplTests {
     }
 
     @Test
+    public void createUser_shouldThrowExceptionIfUserIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.createUser(null)
+        );
+        assertEquals("User can not be null", exception.getMessage());
+    }
+
+    @Test
+    public void createUser_shouldThrowExceptionIfUserGetNameIsNull() {
+
+        User user = new User();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.createUser(user)
+        );
+        assertEquals("User name can not be null", exception.getMessage());
+    }
+
+    @Test
+    public void createUser_shouldThrowExceptionIfUserGetNameIsEmpty() {
+        User user = new User();
+        user.setName("");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.createUser(user)
+        );
+        assertEquals("User name can not be empty", exception.getMessage());
+    }
+
+    @Test
     public void createUser_shouldThrowExceptionIfUserExists() {
 
         User user = new User();
@@ -101,6 +137,85 @@ public class UserServiceImplTests {
         assertNotNull(result);
         assertEquals(1, result.getId());
         assertEquals("test1", result.getName());
+    }
+
+    @Test
+    public void updateUser_shouldUpdateFieldsWithoutChangingName() {
+        User newUser = new User();
+        newUser.setName("test");
+        newUser.setUserRole(UserRole.CAPTAIN);
+
+        User oldUser = new User();
+        oldUser.setName("test");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(oldUser));
+
+        User result = userService.updateUser(1, newUser);
+
+        assertEquals(UserRole.CAPTAIN, result.getUserRole());
+        verify(userRepository, times(1)).save(oldUser);
+    }
+
+    @Test
+    public void updateUser_shouldThrowExceptionIfUserIdIsNegative() {
+
+        User user = new User();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.updateUser(-1, user)
+        );
+
+        assertEquals("User id can not be negative", exception.getMessage());
+    }
+
+    @Test
+    public void updateUser_shouldThrowExceptionIfUserIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.updateUser(1, null)
+        );
+
+        assertEquals("User can not be null", exception.getMessage());
+    }
+
+    @Test
+    public void updateUser_shouldThrowExceptionIfUserNotFound() {
+
+        User user = new User();
+
+        UserNotFoundException exception = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.updateUser(1, user)
+        );
+
+        assertEquals("User does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void updateUser_shouldThrowExceptionIfNewNameAlreadyExistsForAnotherUser() {
+        User newUser = new User();
+        newUser.setId(1);
+        newUser.setName("newTest");
+
+        User user = new User();
+        user.setName("test");
+
+        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+
+        User anotherUser = new User();
+        anotherUser.setId(99);
+        anotherUser.setName("newTest");
+
+        when(userRepository.findByName("newTest")).thenReturn(Optional.of(anotherUser));
+
+        UserAlreadyExistsException exception = assertThrows(
+                UserAlreadyExistsException.class,
+                () -> userService.updateUser(1, newUser)
+        );
+
+        assertEquals("User already exists", exception.getMessage());
     }
 
     @Test

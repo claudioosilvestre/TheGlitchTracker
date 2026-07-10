@@ -73,9 +73,9 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User can not be null");
-        }
-
-        if (user.getName() == null || user.getName().isBlank()) {
+        } else if (user.getName() == null) {
+            throw new IllegalArgumentException("User name can not be null");
+        } else if (user.getName().isBlank()) {
             throw new IllegalArgumentException("User name can not be empty");
         }
 
