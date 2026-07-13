@@ -5,7 +5,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,10 @@ public class AiServiceImpl implements AiService {
     private ChatClient chatClient;
     private RagVectorStoreService vectorStore;
 
+    public AiServiceImpl(ChatClient chatClient, RagVectorStoreService vectorStore) {
+        this.chatClient = chatClient;
+        this.vectorStore = vectorStore;
+    }
 
     @Override
     public Generation info(String question) {
@@ -46,15 +49,5 @@ public class AiServiceImpl implements AiService {
                         "Maximum 15 words. Return only the quote, no quotation marks, no explanation.")
                 .call()
                 .content();
-    }
-
-    @Autowired
-    public void setChatClient(ChatClient chatClient) {
-        this.chatClient = chatClient;
-    }
-
-    @Autowired
-    public void setStore(RagVectorStoreService vectorStore) {
-        this.vectorStore = vectorStore;
     }
 }
