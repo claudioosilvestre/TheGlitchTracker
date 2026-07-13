@@ -4,7 +4,6 @@ import com.theglitchtracker.exception.UserAlreadyExistsException;
 import com.theglitchtracker.exception.UserNotFoundException;
 import com.theglitchtracker.model.User;
 import com.theglitchtracker.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
 
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public String uploadAvatar(MultipartFile file) {
@@ -90,19 +92,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(int userId, User user) {
-        if(userId <= 0) {
+        if (userId <= 0) {
             throw new IllegalArgumentException("User id can not be negative");
         }
-        if(user == null) {
+        if (user == null) {
             throw new IllegalArgumentException("User can not be null");
         }
-        if(!userRepository.findById(userId).isPresent()) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new UserNotFoundException();
         }
 
         User updatedUser = userRepository.findById(userId).get();
 
-        if(!updatedUser.getName().equals(user.getName()) &&
+        if (!updatedUser.getName().equals(user.getName()) &&
                 userRepository.findByName(user.getName()).isPresent()) {
             throw new UserAlreadyExistsException();
         }
@@ -118,11 +120,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(int userId) {
-        if(userId <= 0) {
+        if (userId <= 0) {
             throw new IllegalArgumentException("Id must be positive");
         }
 
-        if(!userRepository.findById(userId).isPresent()) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new UserNotFoundException();
         }
 
@@ -133,17 +135,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(int userId) {
-        if(userId <= 0) {
+        if (userId <= 0) {
             throw new IllegalArgumentException("Id must be positive");
         }
-        if(!userRepository.findById(userId).isPresent()) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new UserNotFoundException();
         }
         userRepository.deleteById(userId);
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
     }
 }

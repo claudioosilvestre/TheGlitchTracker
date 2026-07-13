@@ -5,11 +5,9 @@ import com.theglitchtracker.model.Glitch;
 import com.theglitchtracker.model.GlitchPriority;
 import com.theglitchtracker.model.GlitchStatus;
 import com.theglitchtracker.repository.GlitchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,6 +17,11 @@ public class GlitchServiceImpl implements GlitchService {
 
     private GlitchRepository glitchRepository;
     private UserService userService;
+
+    public GlitchServiceImpl(GlitchRepository glitchRepository, UserService userService) {
+        this.glitchRepository = glitchRepository;
+        this.userService = userService;
+    }
 
     @Override
     public List<Glitch> listAllGlitches() {
@@ -153,7 +156,7 @@ public class GlitchServiceImpl implements GlitchService {
         }
 
         return glitchRepository.save(glitch);
-    }
+        }
 
     @Override
     public Glitch updateGlitchPriority(int glitchId, GlitchPriority glitchPriority) {
@@ -194,15 +197,5 @@ public class GlitchServiceImpl implements GlitchService {
         glitch.setResolvedAt(LocalDateTime.now());
 
         return glitchRepository.save(glitch);
-    }
-
-    @Autowired
-    public void setGlitchRepository(GlitchRepository glitchRepository) {
-        this.glitchRepository = glitchRepository;
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 }
