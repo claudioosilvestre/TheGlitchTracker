@@ -1,8 +1,9 @@
 package com.theglitchtracker.service;
 
+import com.theglitchtracker.exception.TheGlitchTrackerException;
 import com.theglitchtracker.model.Glitch;
+import com.theglitchtracker.model.GlitchPriority;
 import com.theglitchtracker.model.GlitchStatus;
-import com.theglitchtracker.model.User;
 import com.theglitchtracker.repository.GlitchRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,5 +78,100 @@ public class GlitchServiceImplTests {
         );
 
         assertEquals("Glitch id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void getGlitchById_shouldThrowExceptionIfGlitchNotFound() {
+
+        when(glitchRepository.findById(5)).thenReturn(Optional.empty());
+
+        TheGlitchTrackerException exception = assertThrows(
+                TheGlitchTrackerException.class,
+                () -> glitchService.getGlitchById(5)
+        );
+        assertEquals("Glitch does not exist", exception.getMessage());
+    }
+
+    @Test
+    void createGlitch_shouldCreateValidGlitch() {
+
+        Glitch glitch = new Glitch();
+        glitch.setId(1);
+        glitch.setTitle("test");
+        glitch.setGlitchStatus(GlitchStatus.IDENTIFIED);
+        glitch.setGlitchPriority(GlitchPriority.GLITCH);
+
+        when(glitchRepository.save(glitch)).thenReturn(glitch);
+
+        Glitch result = glitchService.createGlitch(glitch);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("test", result.getTitle());
+        assertEquals(GlitchStatus.IDENTIFIED, result.getGlitchStatus());
+        assertEquals(GlitchPriority.GLITCH, result.getGlitchPriority());
+        verify(glitchRepository).save(glitch);
+    }
+
+    @Test
+    void createGlitch_shouldThrowExceptionIfGlitchIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.createGlitch(null)
+        );
+        assertEquals("Glitch can not be null", exception.getMessage());
+    }
+
+    @Test
+    void createGlitch_shouldThrowExceptionIfGlitchDoesNotHaveTitle() {
+
+        Glitch glitch = new Glitch();
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.createGlitch(glitch)
+        );
+        assertEquals("Glitch title can not be empty", exception.getMessage());
+    }
+
+    @Test
+    void createGlitch_ifGlitchHasNoDefinedGlitchStatusShouldBeDefinedAutomaticallyStatusIdentified () {
+
+        Glitch glitch = new Glitch();
+        glitch.setId(1);
+        glitch.setTitle("test");
+        glitch.setGlitchPriority(GlitchPriority.GLITCH);
+
+        when(glitchRepository.save(glitch)).thenReturn(glitch);
+
+        Glitch result = glitchService.createGlitch(glitch);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("test", result.getTitle());
+        assertEquals(GlitchStatus.IDENTIFIED, result.getGlitchStatus());
+        assertEquals(GlitchPriority.GLITCH, result.getGlitchPriority());
+        verify(glitchRepository).save(glitch);
+    }
+
+    @Test
+    void createGlitch_ifGlitchHasNoDefinedGlitchPriorityShouldBeDefinedAutomaticallyPriorityGlitch() {
+
+        Glitch glitch = new Glitch();
+        glitch.setId(1);
+        glitch.setTitle("test");
+        glitch.setGlitchStatus(GlitchStatus.IDENTIFIED);
+
+        when(glitchRepository.save(glitch)).thenReturn(glitch);
+
+        Glitch result = glitchService.createGlitch(glitch);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("test", result.getTitle());
+        assertEquals(GlitchStatus.IDENTIFIED, result.getGlitchStatus());
+        assertEquals(GlitchPriority.GLITCH, result.getGlitchPriority());
+        verify(glitchRepository).save(glitch);
     }
 }
