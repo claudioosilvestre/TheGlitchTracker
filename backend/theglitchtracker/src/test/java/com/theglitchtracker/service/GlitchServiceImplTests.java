@@ -239,4 +239,60 @@ public class GlitchServiceImplTests {
         );
         assertEquals("Glitch does not exist", exception.getMessage());
     }
+
+    @Test
+    void updateStatus_shouldReturnGlitchWithUpdatedStatus() {
+
+        Glitch glitch = new Glitch();
+        glitch.setId(1);
+        glitch.setTitle("test");
+        glitch.setGlitchStatus(GlitchStatus.IDENTIFIED);
+        glitch.setGlitchPriority(GlitchPriority.DEJA_VU);
+
+        when(glitchRepository.findById(1)).thenReturn(Optional.of(glitch));
+
+        when(glitchRepository.save(glitch)).thenReturn(glitch);
+
+        Glitch result = glitchService.updateStatus(1, GlitchStatus.BENDING_THE_RULES);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("test", result.getTitle());
+        assertEquals(GlitchStatus.BENDING_THE_RULES, result.getGlitchStatus());
+        assertEquals(GlitchPriority.DEJA_VU, result.getGlitchPriority());
+        verify(glitchRepository).findById(1);
+        verify(glitchRepository).save(glitch);
+    }
+
+    @Test
+    void updateStatus_shouldThrowExceptionIfGlitchIdIsNegative() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.updateStatus(-1, GlitchStatus.BENDING_THE_RULES)
+        );
+        assertEquals("Glitch id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void updateStatus_shouldThrowExceptionIfGlitchStatusIsNull() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.updateStatus(1, null)
+        );
+        assertEquals("Glitch status can not be null", exception.getMessage());
+    }
+
+    @Test
+    void updateStatus_shouldThrowExceptionIfGlitchNotFound() {
+
+        when(glitchRepository.findById(5)).thenReturn(Optional.empty());
+
+        TheGlitchTrackerException exception = assertThrows(
+                TheGlitchTrackerException.class,
+                () -> glitchService.updateStatus(5, GlitchStatus.BENDING_THE_RULES)
+        );
+        assertEquals("Glitch does not exist", exception.getMessage());
+    }
 }
