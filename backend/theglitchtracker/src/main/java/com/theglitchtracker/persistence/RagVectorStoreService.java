@@ -7,7 +7,6 @@ import org.springframework.ai.transformer.splitter.TextSplitter;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -28,6 +27,10 @@ public class RagVectorStoreService {
     private int numberResults;
 
     private SimpleVectorStore vectorStore;
+
+    public RagVectorStoreService(SimpleVectorStore vectorStore) {
+        this.vectorStore = vectorStore;
+    }
 
     @PostConstruct
     public void init() {
@@ -66,10 +69,5 @@ public class RagVectorStoreService {
         return documents.stream()
                 .map(Document::getText)
                 .toList();
-    }
-
-    @Autowired
-    public void setSimpleVectorStore(SimpleVectorStore vectorStore) {
-        this.vectorStore = vectorStore;
     }
 }

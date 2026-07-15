@@ -134,7 +134,6 @@ public class GlitchServiceImpl implements GlitchService {
                 .filter(glitch -> glitch.getGlitchStatus() != null)
                 .collect(Collectors.groupingBy(glitch -> glitch.getGlitchPriority(), Collectors.counting()));
 
-
         return glitchPriorityMap;
     }
 
@@ -154,9 +153,8 @@ public class GlitchServiceImpl implements GlitchService {
         if (glitch.getUser() != null && glitch.getUser().getId() == userId) {
             glitch.setUser(null);
         }
-
         return glitchRepository.save(glitch);
-        }
+    }
 
     @Override
     public Glitch updateGlitchPriority(int glitchId, GlitchPriority glitchPriority) {

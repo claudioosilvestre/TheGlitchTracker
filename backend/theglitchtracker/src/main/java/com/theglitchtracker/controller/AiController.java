@@ -22,5 +22,4 @@ public class AiController {
     public ResponseEntity<String> generatePhraseOracle() {
         return ResponseEntity.ok(aiService.generateOracleQuote());
     }
-
 }
