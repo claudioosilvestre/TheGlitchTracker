@@ -27,9 +27,7 @@ public class Glitch {
     @Enumerated(EnumType.STRING)
     private GlitchPriority glitchPriority;
 
-    // EAGER garante que o User é carregado automaticamente com o Glitch numa única query.
-    // Evitamos que o campo "user" venha null quando o frontend pede a lista de glitches (tavamos a ter bug aqui)
-    @ManyToOne(fetch = FetchType.EAGER) // -> adicionei o FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -68,8 +66,6 @@ public class Glitch {
         return resolvedAt;
     }
 
-    // Sets the resolution timestamp and automatically
-    // changes the glitch status to SYSTEM_FIXED.
     public void setResolvedAt(LocalDateTime resolvedAt) {
         this.resolvedAt = resolvedAt;
         this.setGlitchStatus(GlitchStatus.SYSTEM_FIXED);
