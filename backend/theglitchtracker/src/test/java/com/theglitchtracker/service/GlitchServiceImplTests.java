@@ -371,4 +371,63 @@ public class GlitchServiceImplTests {
         verify(userService).findById(2);
         verify(glitchRepository).save(glitch);
     }
+
+    @Test
+    void addUserToGlitch_throwExceptionIfGlitchIdIsNegative() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.addUserToGlitch(-1, 1)
+        );
+        assertEquals("Glitch Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void addUserToGlitch_throwExceptionIfUserIdIsNegative() {
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> glitchService.addUserToGlitch(1, -1)
+        );
+        assertEquals("User Id must be positive", exception.getMessage());
+    }
+
+    @Test
+    void addUserToGlitch_throwExceptionIfGlitchNotFound() {
+
+        User user = new User();
+        user.setId(2);
+
+        when(glitchRepository.findById(1)).thenReturn(Optional.empty());
+
+        TheGlitchTrackerException exception = assertThrows(
+                TheGlitchTrackerException.class,
+                () -> glitchService.addUserToGlitch(1, 2)
+        );
+        assertEquals("Glitch does not exist", exception.getMessage());
+    }
+
+    @Test
+    void removeUserFromGlitch_shouldReturnGlitchWithoutUser() {
+
+        User user = new User();
+        user.setId(2);
+
+        Glitch glitch = new Glitch();
+        glitch.setId(1);
+        glitch.setTitle("test");
+        glitch.setUser(user);
+
+        when(glitchRepository.findById(1)).thenReturn(Optional.of(glitch));
+        when(glitchRepository.save(glitch)).thenReturn(glitch);
+
+        Glitch result = glitchService.removeUserFromGlitch(1, 2);
+
+        assertNotNull(result);
+        assertEquals(1, result.getId());
+        assertEquals("test", result.getTitle());
+        assertNull(result.getUser());
+        verify(glitchRepository).findById(1);
+        verify(glitchRepository).save(glitch);
+    }
 }
